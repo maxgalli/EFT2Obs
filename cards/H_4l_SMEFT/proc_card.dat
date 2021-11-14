@@ -1,0 +1,5 @@
+import model SMEFTsim_A_U35_MwScheme_UFO_v2_1
+
+generate h > l+ l- l+ l- NP<=1
+
+output H_4l_SMEFT -nojpeg
