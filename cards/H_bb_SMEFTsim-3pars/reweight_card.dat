@@ -1,0 +1,41 @@
+change rwgt_dir rwgt
+launch --rwgt_name=rw0000
+set smeft 6 0
+set smeft 11 0
+set smeft 15 0
+launch --rwgt_name=rw0001
+set smeft 6 0.005
+set smeft 11 0
+set smeft 15 0
+launch --rwgt_name=rw0002
+set smeft 6 0.01
+set smeft 11 0
+set smeft 15 0
+launch --rwgt_name=rw0003
+set smeft 6 0
+set smeft 11 0.005
+set smeft 15 0
+launch --rwgt_name=rw0004
+set smeft 6 0
+set smeft 11 0.01
+set smeft 15 0
+launch --rwgt_name=rw0005
+set smeft 6 0
+set smeft 11 0
+set smeft 15 0.005
+launch --rwgt_name=rw0006
+set smeft 6 0
+set smeft 11 0
+set smeft 15 0.01
+launch --rwgt_name=rw0007
+set smeft 6 0.01
+set smeft 11 0.01
+set smeft 15 0
+launch --rwgt_name=rw0008
+set smeft 6 0.01
+set smeft 11 0
+set smeft 15 0.01
+launch --rwgt_name=rw0009
+set smeft 6 0
+set smeft 11 0.01
+set smeft 15 0.01
