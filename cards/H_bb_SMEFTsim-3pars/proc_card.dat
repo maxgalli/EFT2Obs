@@ -1,0 +1,5 @@
+import model SMEFTsim_U35_MwScheme_UFO
+
+generate h > b b~ NP<=1
+
+output H_bb_SMEFTsim-3pars -nojpeg
