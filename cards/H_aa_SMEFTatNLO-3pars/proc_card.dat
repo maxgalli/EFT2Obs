@@ -1,0 +1,5 @@
+import model SMEFTatNLO-NLOCustom
+
+generate h > a a NP=2 QED=1
+
+output H_aa_SMEFTatNLO-3pars
