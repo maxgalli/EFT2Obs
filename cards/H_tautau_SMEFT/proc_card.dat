@@ -1,0 +1,5 @@
+import model SMEFTsim_U35_MwScheme_UFO
+
+generate h > ta+ ta- NP<=1 SMHLOOP=0 NPprop=0
+
+output H_tautau_SMEFT -nojpeg

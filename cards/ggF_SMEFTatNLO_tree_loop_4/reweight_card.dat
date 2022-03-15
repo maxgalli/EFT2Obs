@@ -1,0 +1,44 @@
+change rwgt_dir rwgt
+change process p p > h NP=2 QCD=0 QED=1 QCD^2==2 NP^2==4 [virt=QCD]
+change process p p > h j NP=2 QCD=1 QED=1 QCD^2==4 NP^2==4 [virt=QCD] --add
+change process p p > h j j NP=2 QCD=2 QED=1 QCD^2==6 NP^2==4 [virt=QCD] --add
+launch --rwgt_name=rw0000
+set DIM6 8 0
+set DIM62F 19 0
+set DIM62F 24 0
+launch --rwgt_name=rw0001
+set DIM6 8 0.005
+set DIM62F 19 0
+set DIM62F 24 0
+launch --rwgt_name=rw0002
+set DIM6 8 0.01
+set DIM62F 19 0
+set DIM62F 24 0
+launch --rwgt_name=rw0003
+set DIM6 8 0
+set DIM62F 19 0.005
+set DIM62F 24 0
+launch --rwgt_name=rw0004
+set DIM6 8 0
+set DIM62F 19 0.01
+set DIM62F 24 0
+launch --rwgt_name=rw0005
+set DIM6 8 0
+set DIM62F 19 0
+set DIM62F 24 0.005
+launch --rwgt_name=rw0006
+set DIM6 8 0
+set DIM62F 19 0
+set DIM62F 24 0.01
+launch --rwgt_name=rw0007
+set DIM6 8 0.01
+set DIM62F 19 0.01
+set DIM62F 24 0
+launch --rwgt_name=rw0008
+set DIM6 8 0.01
+set DIM62F 19 0
+set DIM62F 24 0.01
+launch --rwgt_name=rw0009
+set DIM6 8 0
+set DIM62F 19 0.01
+set DIM62F 24 0.01
