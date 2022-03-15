@@ -1,0 +1,10 @@
+import model SMEFTsim_topU3l_alphaScheme_UFO-massless
+
+define l = e+ mu+ ta+ e- mu- ta-
+define v = ve ve~ vm vm~ vt vt~
+define q = u u~ d d~ c c~ s s~ b b~
+define zdec = l q v
+
+generate z > ve ve~ NP<=1 SMHLOOP=0 NPprop=0
+
+output Z_vv_SMEFT_alpha -nojpeg

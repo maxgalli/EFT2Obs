@@ -1,0 +1,12 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-christmas_nobmass
+
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+
+define q = u u~ d d~ s s~ c c~ b b~
+
+generate h > l+ l- q q NP=0 SMHLOOP=0 NPprop=0
+
+output H_llqq_SMEFT -nojpeg

@@ -1,0 +1,5 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-christmas
+
+generate h > b b~ NP=0 SMHLOOP=0 NPprop=0
+
+output H_bb_SMEFT -nojpeg

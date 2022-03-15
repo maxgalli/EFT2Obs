@@ -1,0 +1,5 @@
+import model SMEFTsim_U35_MwScheme_UFO
+
+generate h > g g NP<=1 SMHLOOP=1 NPprop=0
+
+output H_gg_SMEFT -nojpeg

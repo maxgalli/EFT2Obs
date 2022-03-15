@@ -1,0 +1,5 @@
+import model SMEFTatNLO-NLO
+
+generate g g > e+ e- h QCD=0 QED=3 NP=2 [noborn=QCD]
+
+output ggZH-SMEFTatNLO_decay -nojpeg

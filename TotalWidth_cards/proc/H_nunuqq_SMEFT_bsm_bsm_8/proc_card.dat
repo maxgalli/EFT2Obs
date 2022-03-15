@@ -1,0 +1,13 @@
+import model SMEFTsim_U35_MwScheme_UFO-noCKM_noYukawa
+
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+
+define q = u u~ d d~ s s~ c c~ b b~
+
+set group_subprocesses True 
+generate h > vl vl~ q q NP<=1 NP^2==2 NPcHB^2==1 SMHLOOP=0 NPprop=0
+
+output H_nunuqq_SMEFT_bsm_bsm_8 -nojpeg
