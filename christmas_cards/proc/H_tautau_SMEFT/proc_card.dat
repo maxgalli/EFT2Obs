@@ -1,5 +1,0 @@
-import model SMEFTsim_topU3l_MwScheme_UFO-christmas
-
-generate h > ta+ ta- NP=0 SMHLOOP=0 NPprop=0
-
-output H_tautau_SMEFT -nojpeg

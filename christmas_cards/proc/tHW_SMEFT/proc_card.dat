@@ -1,8 +1,0 @@
-import model SMEFTsim_topU3l_MwScheme_UFO-christmas_massless
-
-define p = p b b~
-
-generate p p > h t w- NP=0 SMHLOOP=0 NPprop=0
-add process p p > h t~ w+ NP=0 SMHLOOP=0 NPprop=0
-
-output tHW_SMEFT -nojpeg

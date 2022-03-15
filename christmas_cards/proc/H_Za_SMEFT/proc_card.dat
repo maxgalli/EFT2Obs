@@ -1,5 +1,0 @@
-import model SMEFTsim_topU3l_MwScheme_UFO-christmas_massless
-
-generate h > Z a NP=0 SMHLOOP=1 NPprop=0
-
-output H_Za_SMEFT -nojpeg

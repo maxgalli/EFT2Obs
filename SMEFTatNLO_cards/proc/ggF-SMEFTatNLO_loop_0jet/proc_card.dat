@@ -1,7 +1,0 @@
-import model SMEFTatNLO-ggF_no_cpg
-
-generate p p > h QED=1 NP=0 QCD=2 [noborn=QCD]
-#add process p p > h j QED=1 NP=0 QCD=3 [noborn=QCD]
-#add process p p > h j j QED=1 NP=0 QCD=4 [noborn=QCD]
-
-output ggF-SMEFTatNLO_loop_0jet -nojpeg

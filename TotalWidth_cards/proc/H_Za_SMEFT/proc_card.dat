@@ -1,5 +1,0 @@
-import model SMEFTsim_U35_MwScheme_UFO
-
-generate h > Z a NP<=1 SMHLOOP=1 NPprop=0
-
-output H_Za_SMEFT -nojpeg

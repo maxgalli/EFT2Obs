@@ -1,5 +1,0 @@
-import model SMEFTsim_topU3l_MwScheme_UFO
-
-generate h > b b~ NP<=1 SMHLOOP=0 NPprop=0
-
-output H_bb_SMEFT_topU3l -nojpeg
