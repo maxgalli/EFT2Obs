@@ -5,7 +5,7 @@
 ## INFORMATION FOR DIM6
 ###################################
 BLOCK DIM6 # 
-      1 1.000000e+03 # lambda
+      1 1000.0 # lambda
       2 0.000000e+00 # cpdc
       3 0.000000e+00 # cpwb
       4 0.000000e+00 # cdp
@@ -96,7 +96,7 @@ BLOCK DIM64F4L #
 ## INFORMATION FOR LOOP
 ###################################
 BLOCK LOOP # 
-      1 108.0 # mu_r
+      1 9.118800e+01 # mu_r
 ###################################
 ## INFORMATION FOR MASS
 ###################################
@@ -125,7 +125,7 @@ BLOCK MASS #
 ## INFORMATION FOR RENOR
 ###################################
 BLOCK RENOR # 
-      1 108.0 # mueft
+      1 9.118000e+01 # mueft
 ###################################
 ## INFORMATION FOR SMINPUTS
 ###################################
