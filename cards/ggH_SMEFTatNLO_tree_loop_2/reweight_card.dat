@@ -1,4 +1,7 @@
 change rwgt_dir rwgt
+change process p p > h NP=2 QCD=0 QED=1 QCD^2==2 NP^2==2 [virt=QCD]
+change process p p > h j NP=2 QCD=1 QED=1 QCD^2==4 NP^2==2 [virt=QCD] --add
+change process p p > h j j NP=2 QCD=2 QED=1 QCD^2==6 NP^2==2 [virt=QCD] --add
 launch --rwgt_name=rw0000
 set DIM6 8 0
 set DIM62F 19 0

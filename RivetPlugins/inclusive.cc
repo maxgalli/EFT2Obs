@@ -10,11 +10,11 @@ namespace Rivet {
 
 
   /// @brief Add a short analysis description here
-  class test : public Analysis {
+  class inclusive : public Analysis {
   public:
 
     /// Constructor
-    DEFAULT_RIVET_ANALYSIS_CTOR(test);
+    DEFAULT_RIVET_ANALYSIS_CTOR(inclusive);
 
 
     /// @name Analysis methods
@@ -53,7 +53,7 @@ namespace Rivet {
 
 
   // The hook for the plugin system
-  DECLARE_RIVET_PLUGIN(test);
+  DECLARE_RIVET_PLUGIN(inclusive);
 
 
 }

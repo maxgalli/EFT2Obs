@@ -166,12 +166,12 @@ def getTerm(eqn, key):
 
 def combineEqns(direct_eqn, args):
   with open(args.nominal_eqn, "r") as f:
-    nominal_eqn = jsonToNewDict(json.load(f))
-    nominal_eqn = getNonEmptyBin(nominal_eqn)
+    #nominal_eqn = jsonToNewDict(json.load(f))
+    nominal_eqn = getNonEmptyBin(json.load(f))
   if args.prop_eqn != None:
     with open(args.prop_eqn, "r") as f:
-      prop_eqn = jsonToNewDict(json.load(f))
-      prop_eqn = getNonEmptyBin(prop_eqn)
+      #prop_eqn = jsonToNewDict(json.load(f))
+      prop_eqn = getNonEmptyBin(json.load(f))
   else:
     prop_eqn = od()
 
@@ -214,17 +214,4 @@ else:
 combined_eqn = combineEqns(eqn, args)
 
 with open(args.output, "w") as f:
-  json.dump(combined_eqn, f, indent=4)
-
-"""
-n_par = 5
-x = .1
-
-results, actual_coeff = genToyResults(n_par, 10000, 1, x, smear=True)
-coeff=deriveEquations(results, x, n_par)
-
-for i in range(5):
- print("-"*10)
- print(actual_coeff[i])
- print(coeff[i]) 
-"""
+  json.dump({"inclusive":combined_eqn}, f, indent=4)

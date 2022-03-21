@@ -40,6 +40,7 @@ output                = %(TASK)s.$(ClusterId).$(ProcId).out
 error                 = %(TASK)s.$(ClusterId).$(ProcId).err
 log                   = %(TASK)s.$(ClusterId).log
 
+transfer_input_files = gridpack_%(TASKNAME)s.tar.gz
 transfer_output_files = Rivet_$(ProcId).yoda
 
 # Send the job to Held state on failure.
@@ -286,7 +287,8 @@ class Jobs:
               'TASK': self.task_name,
               'TASKDIR': os.path.join(self.task_dir, ''),
               'EXTRA': self.bopts.decode('string_escape'),
-              'NUMBER': jobs
+              'NUMBER': jobs,
+              'TASKNAME': self.task_name
             }
             subfile.write(condor_settings)
             subfile.close()

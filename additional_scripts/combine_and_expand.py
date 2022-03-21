@@ -34,7 +34,7 @@ def getEqnVal(eqn, bin_name, param_vals):
 
 def getNonEmptyBinNames(eqn):
   names = eqn.keys()
-  print(names)
+  #print(names)
   non_empty_names = []
   for name in names:
     if len(eqn[name]) > 0:

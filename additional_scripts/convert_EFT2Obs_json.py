@@ -45,41 +45,11 @@ def jsonToNewDict(eft2obs_json, key):
 
   return new_json_dict
 
-def cleanUp(new_json_dict, options):
-  for tag in new_json_dict.keys():
-    params = new_json_dict[tag].keys()
-    params = filter(lambda x: x[0] != "u", params)
-    max_coeff = 0
-    for param in params:
-      maybe_max_coeff = abs(new_json_dict[tag][param]) - 3*new_json_dict[tag]["u_"+param]
-      if maybe_max_coeff > max_coeff:
-        max_coeff = maybe_max_coeff
-    for param in params:
-      if abs(new_json_dict[tag][param]) < options.relative_threshold * max_coeff:
-        del new_json_dict[tag][param]
-        del new_json_dict[tag]["u_"+param]
-  return new_json_dict
-
-
-"""
-def cleanUp(new_json_dict, options):
-  for tag in new_json_dict.keys():
-    params = new_json_dict[tag].keys()
-    params = filter(lambda x: x[0] != "u", params)
-    for param in params:
-      param_value = new_json_dict[tag][param]
-      if abs(param_value) < 0.001:
-        del new_json_dict[tag][param]
-        del new_json_dict[tag]["u_"+param]
-  return new_json_dict
-"""
-
-
 from optparse import OptionParser
 parser = OptionParser(usage="%prog input.json output.json")
 parser.add_option("--key", dest="key", 
                     help="Key to interpret bin numbers.")
-parser.add_option("--relative-threshold", dest="relative_threshold", default=1e-3, type=float,
+parser.add_option("--relative-threshold", dest="relative_threshold", default=1e-16, type=float,
                   help="Remove terms where the coefficients are, as a fraction to the biggest coefficient, smaller than the threshold")
 
 (options, args) = parser.parse_args()
@@ -101,7 +71,7 @@ if options.key is not None:
   options.key = key
 
 new_json_dict = jsonToNewDict(eft2obs_json, options.key)
-new_json_dict = cleanUp(new_json_dict, options)
+#new_json_dict = splitTH(new_json_dict, input_json)
 
 with open(output_json, "w") as f:
   f.write(json.dumps(new_json_dict, indent=4))

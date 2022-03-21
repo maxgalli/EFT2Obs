@@ -7,7 +7,7 @@ import importlib
 
 """SCRIPT IS SMEFTsim SPECIFIC!!!"""
 
-CONDOR_TEMPLATE="""executable            = run_rw_point.sh
+CONDOR_TEMPLATE="""executable            = additional_scripts/run_rw_point.sh
 arguments             = $(MG_process) $(rw_num) $(nevents) $(ncores)
 
 output                = directResults/%(process)s/condor_$(ClusterId)_rw_$(rw_num)_nevents_$(nevents).out

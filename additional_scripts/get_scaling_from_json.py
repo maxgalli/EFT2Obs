@@ -6,15 +6,19 @@ import yoda
 
 DO_PRINT = False
 
-def BinStats(b):
-    if b.numEntries == 0:
+def BinStats(hist, ib, active_bins):
+    sumW = hist[ib][0]
+    sumW2 = hist[ib][1]
+    numEntries = active_bins[ib][1]
+
+    if numEntries == 0:
         return [0., 0.]
-    mean = b.sumW / b.numEntries
-    stderr2 = (b.sumW2 / b.numEntries) - math.pow(mean, 2)
+    mean = sumW / numEntries
+    stderr2 = (sumW2 / numEntries) - math.pow(mean, 2)
     if stderr2 < 0.:
         stderr = 0.
     else:
-        stderr = math.sqrt(stderr2 / b.numEntries)
+        stderr = math.sqrt(stderr2 / numEntries)
     return [mean, stderr]
 
 
@@ -30,12 +34,10 @@ parser.add_argument('--output', '-o', default=None)
 parser.add_argument('--config', '-c', default="Rivet.yoda")
 parser.add_argument('--hist', default='/HiggsTemplateCrossSectionsStage1/HTXS_stage1_pTjet30')
 parser.add_argument('--exclude-rel', default=None, help="Exclude terms with magnitude below this value relative to largest")
-parser.add_argument('--rebin', default=None, help="Comma separated list of new bin edges")
 parser.add_argument('--save', default='json', help="Comma separated list of output formats (json, txt, latex)")
 parser.add_argument('--translate-tex', default=None, help="json file to translate parameter names to latex")
 parser.add_argument('--translate-txt', default=None, help="json file to translate parameter names in the text file")
 parser.add_argument('--bin-labels', default=None, help="json file to translate bin labels")
-parser.add_argument('--nlo', action='store_true', help="Set if weights came from NLO reweighting")
 args = parser.parse_args()
 
 
@@ -69,35 +71,26 @@ if args.bin_labels is not None:
 
 hname = args.hist
 
-aos = yoda.read(args.input, asdict=True)
+with open(args.input, "r") as f:
+    aos = json.load(f)
 
 n_pars = len(pars)
 n_hists = 1 + n_pars * 2 + (n_pars * n_pars - n_pars) / 2
 
+active_bins = aos["%s_active_bins"%hname]
+
 hists = []
 for i in xrange(n_hists):
-    if args.nlo:
-        hists.append(aos['%s[rw%.4i_nlo]' % (hname, i)])
+    hist_name = '%s[rw%.4i]' % (hname, i)
+    if hist_name in aos.keys():
+        hists.append(aos[hist_name])
     else:
-        hists.append(aos['%s[rw%.4i]' % (hname, i)])
+        hists.append([[0., 0.] for bin in active_bins])
 
-# if DO_PRINT: print hists
-is2D = isinstance(hists[0], yoda.Histo2D)
+nbins = len(active_bins)
 
-if args.rebin is not None and not is2D:
-    rebin = [float(X) for X in args.rebin.split(',')]
-    for h in hists:
-        h.rebinTo(rebin)
-
-nbins = hists[0].numBins
-
-if is2D:
-    edges = [[list(hists[0].bins[ib].xEdges), list(hists[0].bins[ib].yEdges)] for ib in xrange(nbins)]
-    # areas = list(hists[0].volumes())
-    areas = [hists[0].bins[ib].volume for ib in xrange(nbins)]
-else:
-    edges = [list(hists[0].bins[ib].xEdges) for ib in xrange(nbins)]
-    areas = list(hists[0].areas())
+edges = [[bin[0],bin[0]+1] for bin in active_bins]
+areas = [1. for edge in edges]
 
 res = {
     "edges": edges,
@@ -122,17 +115,14 @@ if args.bin_labels is not None:
 
 for ib in xrange(nbins):
     terms = []
-    sm = BinStats(hists[0].bins[ib])
+    sm = BinStats(hists[0], ib, active_bins)
     if DO_PRINT: print '-' * n_divider
-    if DO_PRINT: print 'Bin %-4i numEntries: %-10i mean: %-10.3g stderr: %-10.3g' % (ib, hists[0].bins[ib].numEntries, sm[0], sm[1])
+    if DO_PRINT: print 'Bin %-4i numEntries: %-10i mean: %-10.3g stderr: %-10.3g' % (ib, active_bins[ib][1], sm[0], sm[1])
     extra_label = ''
     if args.bin_labels is not None:
         extra_label += ', label=%s' % res["bin_labels"][ib]
     if DO_PRINT: print '         edges: %s%s' % (res['edges'][ib], extra_label)
     if DO_PRINT: print '-' * n_divider
-
-    sm[0] = 5.27107e-2/5.2287e4
-
     if sm[0] == 0:
         res["bins"].append(terms)
         continue
@@ -140,7 +130,7 @@ for ib in xrange(nbins):
         if DO_PRINT: print '%-20s | %12s | %12s | %12s' % ('Term', 'Val', 'Uncert', 'Rel. uncert.')
         if DO_PRINT: print '-' * n_divider
     for ip in xrange(len(pars)):
-        lin = BinStats(hists[ip * 2 + 1].bins[ib])
+        lin = BinStats(hists[ip * 2 + 1], ib, active_bins)
         if lin[0] == 0.:
             continue
         lin[0] = lin[0] / (sm[0] * pars[ip]['val'])
@@ -148,7 +138,7 @@ for ib in xrange(nbins):
         PrintEntry(pars[ip]['name'], lin[0], lin[1])
         terms.append([lin[0], lin[1], pars[ip]['name']])
     for ip in xrange(len(pars)):
-        sqr = BinStats(hists[ip * 2 + 2].bins[ib])
+        sqr = BinStats(hists[ip * 2 + 2], ib, active_bins)
         if sqr[0] == 0.:
             continue
         sqr[0] = sqr[0] / (sm[0] * pars[ip]['val'] * pars[ip]['val'])
@@ -160,7 +150,7 @@ for ib in xrange(nbins):
     ic = 0
     for ix in xrange(0, len(pars)):
         for iy in xrange(ix + 1, len(pars)):
-            cross = BinStats(hists[1 + (len(pars) * 2) + ic].bins[ib])
+            cross = BinStats(hists[1 + (len(pars) * 2) + ic], ib, active_bins)
             if cross[0] != 0.:
                 cross[0] = cross[0] / (sm[0] * pars[ix]['val'] * pars[iy]['val'])
                 cross[1] = cross[1] / (sm[0] * pars[ix]['val'] * pars[iy]['val'])
@@ -184,10 +174,7 @@ if 'txt' in save_formats:
     if DO_PRINT: print '>> Saving histogram parametrisation to %s.txt' % args.output
     txt_out = []
     for ib in xrange(nbins):
-        if is2D:
-            bin_label = '%g-%g,%g-%g' % (res['edges'][ib][0][0], res['edges'][ib][0][1], res['edges'][ib][1][0], res['edges'][ib][1][1])
-        else:
-            bin_label = '%g-%g' % (res['edges'][ib][0], res['edges'][ib][1])
+        bin_label = '%g-%g' % (res['edges'][ib][0], res['edges'][ib][1])
         if args.bin_labels is not None:
             bin_label = bin_labels[args.hist][ib]
         line = '%s:1' % bin_label
@@ -209,10 +196,7 @@ if 'tex' in save_formats:
     \begin{tabular}{|c|c|}
         \hline""")
     for ib in xrange(nbins):
-        if is2D:
-            line = '$%g$--$%g$, $%g$--$%g$ & ' % (res['edges'][ib][0][0], res['edges'][ib][0][1], res['edges'][ib][1][0], res['edges'][ib][1][1])
-        else:
-            line = '$%g$--$%g$ & ' % (res['edges'][ib][0], res['edges'][ib][1])
+        line = '$%g$--$%g$ & ' % (res['edges'][ib][0], res['edges'][ib][1])
         line += r"""\parbox{0.8\columnwidth}{$1 """
         for term in res['bins'][ib]:
             terms = []
