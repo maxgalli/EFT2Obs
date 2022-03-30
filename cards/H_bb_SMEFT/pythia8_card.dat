@@ -30,7 +30,7 @@ TimeShower:alphaSvalue=0.118
 ! Jet Matching Parameters: MLM matching, xqcut > 10 GeV
 JetMatching:setMad = off
 JetMatching:scheme = 1
-JetMatching:merge = on
+JetMatching:merge = off
 JetMatching:jetAlgorithm = 2
 JetMatching:etaJetMax = 999.
 JetMatching:coneRadius = 1.

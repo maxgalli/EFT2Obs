@@ -1,3 +1,12 @@
+"""
+Takes as input a json file that has edges, bins, parameters and areas:
+    - edges is a list of 2-elements lists (low and high edge of the bin)
+    - bins is a list containing a list for each bin; each list contains a list in the form [term, term_err, parameter, *parameter]
+    - parameters: list of wilson coefficients that are variable
+    - areas seem to be the areas of each bin for the SM case
+
+The idea seems to be that h is always the nominal (SM) histogram, while for each deviation a histogram h_dev is computed, which is added to h.
+"""
 import argparse
 import ROOT
 import json
@@ -19,6 +28,7 @@ def Translate(arg, translations):
 
 
 def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
+    print "Starting MakeHist with vals = {}".format(vals)
     is2D = False
     label_list = []
     if isinstance(jhist['edges'][0][0], list):
@@ -43,7 +53,7 @@ def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
                 x_edge_list.append(edge_list[iX])
 
         x_edge_list.append(edge_list[-1])
-        print x_label_list
+        #print x_label_list
         # print edge_list
         # print x_edge_list
         # print edge_list
@@ -51,6 +61,7 @@ def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
         edges = array('d', edge_list)
     else:
         edges = array('d', [jhist['edges'][0][0]] + [X[1] for X in jhist['edges']])
+        print edges
         width_list = [(X[1] - X[0]) for X in jhist['edges']]
 
     h = ROOT.TH1D(name, name, len(edges) - 1, edges)
@@ -62,6 +73,7 @@ def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
             h.GetXaxis().SetBinLabel(i, label_list[i - 1])
             h_dev.GetXaxis().SetBinLabel(i, label_list[i - 1])
         for bininfo in jhist['bins'][i - 1]:
+            #print "bininfo = {}".format(bininfo)
             val = bininfo[0]
             err = bininfo[1]
             pars = bininfo[2:]
@@ -79,14 +91,20 @@ def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
             term += val
             term_err += (err * err)
             # print bininfo, val
-        # print term, term_err
+        print "term = {}, ter_err = {}".format(term, term_err)
         h.SetBinContent(i, jhist['areas'][i - 1] / width_list[i - 1])
         h.SetBinError(i, 0.0)
         h_dev.SetBinContent(i, term * h.GetBinContent(i))
         h_dev.SetBinError(i, math.sqrt(term_err) * h.GetBinContent(i))
+        print "Bin content for h, bin {} is {}".format(i, jhist['areas'][i - 1] / width_list[i - 1])
+        print "Bin content for h_dev, bin {} is {}".format(i, term * h.GetBinContent(i))
     # h.Print("range")
     # h_dev.Print("range")
     h.Add(h_dev)
+    print h.GetNormFactor()
+    print "Printing bins values of merged histogram"
+    for i in xrange(1, h.GetNbinsX() +1):
+        print h.GetBinContent(i)
 
     if is2D:
         h.x_edge_list = x_edge_list
@@ -97,6 +115,9 @@ def MakeHist(name, jhist, vals=dict(), noSquare=False, noCross=False):
     return h
 
 
+#####
+#Main
+#####
 parser = argparse.ArgumentParser()
 parser.add_argument('--hist', default='ggF')
 parser.add_argument('--config', '-c', default='config.json')
@@ -138,6 +159,7 @@ hists = []
 hist_errs = []
 
 h_nominal = MakeHist('nominal', jhist)
+print "h_nominal = {}".format(h_nominal)
 
 hists.append(h_nominal)
 hist_errs.append(h_nominal)

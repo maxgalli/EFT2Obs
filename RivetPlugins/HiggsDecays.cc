@@ -10,7 +10,7 @@ namespace Rivet
 
     void HiggsDecays::analyze(const Event& event)
     {               
-        h_sumW_->fill(0, event.weights()[0]);
+        h_sumW_->fill(0);
         return;
     }
 

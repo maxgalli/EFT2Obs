@@ -1,4 +1,4 @@
-import model SMEFTatNLO-ggFshape
+import model SMEFTatNLO-IlariaStudies
 
 define pl = g u c d s u~ c~ d~ s~
 
@@ -6,4 +6,4 @@ generate p p > H QED=1 NP=0 [noborn=QCD]
 add process p p > H j QED=1 NP=0 [noborn=QCD]
 add process pl pl > H j j QED=1 NP=0 [noborn=QCD]
 
-output ggF-SMEFTatNLO-2jet-loop
+output ggF-SMEFTatNLO-2jet-loop-IlariaStudies
