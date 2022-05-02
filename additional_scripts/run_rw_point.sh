@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
 proc=$1
 rw_num=$2
@@ -24,7 +25,7 @@ pushd /afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs
 	  echo "shower=OFF"
 	  echo "reweight=OFF"
 	  echo "done"
-	  echo "set gridpack True"
+	  echo "set gridpack False"
 	  echo "set nevents $nevents"
 	} > ${TMPDIR}/mgrunscript
 	sed -n "${start},${end}p" cards/${proc}/reweight_card.dat >> ${TMPDIR}/mgrunscript
@@ -47,7 +48,7 @@ pushd working_${RUNLABEL}
 	./bin/generate_events ${RUNLABEL} < ${TMPDIR}/mgrunscript > Events/${RUNLABEL}/generation.log
     fi
 
-    rm Events/${RUNLABEL}/unweighted_events.lhe.gz
+    rm -f Events/${RUNLABEL}/unweighted_events.lhe.gz
     
     mkdir -p /afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs/directResults/${proc}
     rm -rf /afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs/directResults/${proc}/${RUNLABEL}

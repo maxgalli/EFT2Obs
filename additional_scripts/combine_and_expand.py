@@ -94,6 +94,8 @@ def deriveEquation(eqns, function_str, linear_only, x=1e-4):
   else:
     bin_names = result
 
+  #print(bin_names)
+
   all_params = findAllParams(eqns)
   new_eqns = {}
 

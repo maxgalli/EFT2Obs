@@ -3,6 +3,7 @@ EFT2OBS_DIR=/afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs
 export LHAPDF_CONFIG_PATH="${EFT2OBS_DIR}/lhapdf/bin/lhapdf-config"
 export PYTHONPATH="${EFT2OBS_DIR}/lhapdf/lib64/python2.7/site-packages:${PYTHONPATH}"
 export PYTHONPATH="${EFT2OBS_DIR}/scripts:${PYTHONPATH}"
+export PYTHONPATH="${EFT2OBS_DIR}/additional_scripts:${PYTHONPATH}"
 export LD_LIBRARY_PATH="${EFT2OBS_DIR}/lhapdf/lib:${LD_LIBRARY_PATH}"
 export RIVET_ANALYSIS_PATH=${EFT2OBS_DIR}/RivetPlugins
 export MG_DIR="MG5_aMC_v2_6_7"

@@ -131,7 +131,8 @@ for ib in xrange(nbins):
     if DO_PRINT: print '         edges: %s%s' % (res['edges'][ib], extra_label)
     if DO_PRINT: print '-' * n_divider
 
-    sm[0] = 5.27107e-2/5.2287e4
+    #print("Using hard coded SM")
+    #sm[0] = 5.27107e-2/5.2287e4
 
     if sm[0] == 0:
         res["bins"].append(terms)

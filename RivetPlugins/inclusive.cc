@@ -35,7 +35,7 @@ namespace Rivet {
     /// Normalise histograms etc., after the run
     void finalize() {
       double sf = crossSection() / picobarn / sumOfWeights();
-      scale(_h["ZZZZ"], sf); // norm to cross section
+      scale(_h["XXXX"], sf); // norm to cross section
     }
 
     //@}

@@ -1,4 +1,4 @@
-import model SMEFTsim_topU3l_MwScheme_UFO-decay_noYukawa
+import model SMEFTsim_topU3l_MwScheme_UFO-decay_noYukawa_prop
 
 define l+ = e+ mu+ ta+
 define l- = e- mu- ta-
@@ -7,6 +7,6 @@ define vl~ = ve~ vm~ vt~
 
 define q = u u~ d d~ s s~ c c~ b b~
 
-generate h > l+ l- vl vl~ NP<=1 SMHLOOP=0 NPprop=0
+generate h > l+ l- vl vl~ NPall<=2 SMHLOOP=0
 
 output H_llnunu_SMEFTsim_topU3l -nojpeg

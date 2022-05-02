@@ -4,38 +4,38 @@ set SMEFT 5 0
 set SMEFT 103 0
 set SMEFT 107 0
 launch --rwgt_name=rw0001
-set SMEFT 5 0.005
+set SMEFT 5 0.5
 set SMEFT 103 0
 set SMEFT 107 0
 launch --rwgt_name=rw0002
-set SMEFT 5 0.01
+set SMEFT 5 1
 set SMEFT 103 0
 set SMEFT 107 0
 launch --rwgt_name=rw0003
 set SMEFT 5 0
-set SMEFT 103 0.005
+set SMEFT 103 0.5
 set SMEFT 107 0
 launch --rwgt_name=rw0004
 set SMEFT 5 0
-set SMEFT 103 0.01
+set SMEFT 103 1
 set SMEFT 107 0
 launch --rwgt_name=rw0005
 set SMEFT 5 0
 set SMEFT 103 0
-set SMEFT 107 0.005
+set SMEFT 107 0.5
 launch --rwgt_name=rw0006
 set SMEFT 5 0
 set SMEFT 103 0
-set SMEFT 107 0.01
+set SMEFT 107 1
 launch --rwgt_name=rw0007
-set SMEFT 5 0.01
-set SMEFT 103 0.01
+set SMEFT 5 1
+set SMEFT 103 1
 set SMEFT 107 0
 launch --rwgt_name=rw0008
-set SMEFT 5 0.01
+set SMEFT 5 1
 set SMEFT 103 0
-set SMEFT 107 0.01
+set SMEFT 107 1
 launch --rwgt_name=rw0009
 set SMEFT 5 0
-set SMEFT 103 0.01
-set SMEFT 107 0.01
+set SMEFT 103 1
+set SMEFT 107 1

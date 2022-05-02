@@ -41,7 +41,7 @@ error                 = %(TASK)s.$(ClusterId).$(ProcId).err
 log                   = %(TASK)s.$(ClusterId).log
 
 transfer_input_files = gridpack_%(TASKNAME)s.tar.gz
-transfer_output_files = Rivet_$(ProcId).yoda
+transfer_output_files = Rivet_$(ProcId).json
 
 # Send the job to Held state on failure.
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)

@@ -21,9 +21,19 @@ def splitTH(converted_eqn, input_json):
     del converted_eqn["TH"]
   return converted_eqn
 
+def keepGG2HLL(eqn, input_json):
+  if "ggZH" in input_json:
+    new_eqn = OrderedDict()
+    for bin_name in eqn.keys():
+      if "GG2HLL" in bin_name:
+        new_eqn[bin_name] = eqn[bin_name]
+    return new_eqn
+  else:
+    return eqn
+
 def getEqnPath(input_dir, proc, binning):
   if ("ggH" in proc) or ("ggZH" in proc):
-    print(proc)
+    #print(proc)
     file_name = "%s_%s_combined.json"%(proc, binning)
   else:
     file_name = "%s_%s.json"%(proc, binning)
@@ -37,6 +47,10 @@ def loadEqns(procs, input_dir):
       with open(getEqnPath(input_dir, proc, binning)) as f:
         eqn = json.load(f, object_pairs_hook=OrderedDict)
       eqn = splitTH(eqn, proc)
+      eqn = keepGG2HLL(eqn, proc)
+
+      print(proc, [bin_name for bin_name in eqn.keys() if len(eqn[bin_name])>0])
+      del eqn["UNKNOWN"]
       eqns.append(eqn)
   return eqns
 
@@ -52,7 +66,7 @@ def getBinNames(eqns):
 
 def combineEqns(eqns):
   bin_names = getBinNames(eqns)
-  print(bin_names)
+  #print(bin_names)
   combined_eqn = OrderedDict()
 
   for bin_name in bin_names:

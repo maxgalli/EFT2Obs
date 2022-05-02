@@ -1,5 +1,5 @@
-import model SMEFTatNLO-NLO
+import model SMEFTatNLO-ggZH
 
-generate g g > z h QCD=0 QED=2 NP=2 [noborn=QCD]
+generate g g > z h QCD=2 QED=2 NP=2 [noborn=QCD]
 
 output ggZH_SMEFTatNLO -nojpeg

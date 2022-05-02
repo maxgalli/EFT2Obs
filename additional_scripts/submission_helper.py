@@ -5,10 +5,18 @@ import time
 
 EFT2OBS_DIR = "/afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs"
 
-def getNEventsAndJobs(proc, info):
+jobFlavour_time = {
+  "espresso": 20,
+  "microcentury": 60,
+  "longlunch": 2*60,
+  "workday": 8*60,
+  "tomorrow": 26*60
+}
+
+def getNEventsAndJobs(proc, info, jobFlavour):
   total_n = info[proc][0]
   
-  n_per_job = int((20*60) * findRate(proc, info) * (0.75))
+  n_per_job = int((jobFlavour_time[jobFlavour]*60) * findRate(proc, info) * (0.50))
   n_jobs = total_n // n_per_job + 1
 
   if n_jobs == 1:
@@ -45,7 +53,7 @@ def submit(procs, trial_run, dry_run, local, jobFlavour):
       n_per_job, n_jobs = 100, 1
       directory = "condor/trial_run/%s"%proc
     else:
-      n_per_job, n_jobs = getNEventsAndJobs(proc, info)
+      n_per_job, n_jobs = getNEventsAndJobs(proc, info, jobFlavour)
       directory = "condor/pass1/%s"%proc
     
     rivet = info[proc][1]
@@ -77,6 +85,8 @@ def getTimeFromLog(log_file):
         start_date, start_time = line.split(" ")[2:4]
       elif "Job terminated." in line:
         end_date, end_time = line.split(" ")[2:4]
+
+  print(start_date)
 
   t1 = [2022, start_date.split("/")[0], start_date.split("/")[1], start_time.split(":")[0], start_time.split(":")[1], start_time.split(":")[2], 0, 0, 0]
   t1 = [int(num) for num in t1]
@@ -114,13 +124,30 @@ def getTimeFromLog(log_file):
 #     else:       
 #       print("> Trial \033[91m fail \033[0m")
 
-def checkJobs(trial_run):
+def checkJobs(procs, trial_run, write_timing):
   if trial_run: start_dir = "condor/trial_run"
   else:         start_dir = "condor/pass1"
 
-  procs = os.listdir(start_dir)
+  if trial_run and write_timing:
+    if os.path.exists("timing_info.json"):
+      with open("timing_info.json", "r") as f:
+        timing_dict = json.load(f)
+    else:
+      timing_dict = {}
+
+  #procs = os.listdir(start_dir)
   for proc in procs:
-    printJobStatus(os.path.join(start_dir, proc))
+    successful_job = printJobStatus(os.path.join(start_dir, proc))
+
+    if successful_job and trial_run and write_timing:
+      log_file = os.path.join(start_dir, proc, list(filter(lambda f: ".log" in f, sorted(os.listdir(os.path.join(start_dir, proc)))))[-1])
+      events_per_second = 100 / getTimeFromLog(log_file)
+      print("> rate: %.2f events/s"%events_per_second)
+      timing_dict[proc] = events_per_second
+
+  if trial_run and write_timing:
+    with open("timing_info.json", "w") as f:
+      json.dump(timing_dict, f, indent=4)
 
 def checkRivet(path):
   if os.path.exists(path):
@@ -153,12 +180,14 @@ def printJobStatus(directory):
   print("\n>> %s %s"%(proc, colour))
   print("> %d/%d jobs completed \033[0m"%(n_successful_jobs, n_jobs))
 
+  return n_successful_jobs > 0
 
-def main(mode, procs, trial_run, dry_run, local, jobFlavour):
+
+def main(mode, procs, trial_run, dry_run, local, jobFlavour, write_timing):
   if mode == "submit":
     submit(procs, trial_run, dry_run, local, jobFlavour)
   elif mode == "checkJobs":
-    checkJobs(trial_run)
+    checkJobs(procs, trial_run, write_timing)
   else:
     raise Exception("No such mode as %s"%mode)
 
@@ -170,8 +199,10 @@ if __name__=="__main__":
   parser.add_argument('--dry-run', '-d', action="store_true")
   parser.add_argument('--local', '-l', action="store_true")
   parser.add_argument('--jobFlavour', '-f', default="espresso")
+  parser.add_argument('--write-timing', action="store_true")
+
 
   args = parser.parse_args()
 
-  main(args.mode, args.procs, args.trial_run, args.dry_run, args.local, args.jobFlavour)
+  main(args.mode, args.procs, args.trial_run, args.dry_run, args.local, args.jobFlavour, args.write_timing)
   

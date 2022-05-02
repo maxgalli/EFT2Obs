@@ -189,16 +189,19 @@ namespace Rivet {
       Particles uncatV_decays;
       FourMomentum uncatV_p4(0, 0, 0, 0);
       FourVector uncatV_v4(0, 0, 0, 0);
-      int nWs = 0, nZs = 0, nTop = 0;
+      int nWs = 0, nZs = 0, nTop = 0, nLep = 0;
       if (isVH(prodMode)) {
         for (auto ptcl : HepMCUtils::particles(HSvtx, HepMC::children)) {
           if (PID::isW(ptcl->pdg_id())) {
             ++nWs;
             cat.V = Particle(ptcl);
           }
-          if (PID::isZ(ptcl->pdg_id())) {
+          else if (PID::isZ(ptcl->pdg_id())) {
             ++nZs;
             cat.V = Particle(ptcl);
+          }
+          else if (fabs(ptcl->pdg_id())==11 || fabs(ptcl->pdg_id())==12 || fabs(ptcl->pdg_id())==13 || fabs(ptcl->pdg_id())==14 || fabs(ptcl->pdg_id())==15 || fabs(ptcl->pdg_id())==16) {
+            nLep++;
           }
         }
         if (nWs + nZs > 0)
@@ -212,8 +215,19 @@ namespace Rivet {
             }
           }
           // is_uncatdV = true; cat.V = Particle(24,uncatV_p4,uncatV_v4);
-          is_uncatdV = true;
-          cat.V = Particle(24, uncatV_p4);
+          //is_uncatdV = true;
+          //cat.V = Particle(24, uncatV_p4);
+          if (nLep==2 && uncatV_decays.size()==2) {
+            //std::cout << uncatV_decays.charge() << std::endl;
+            if (prodMode==HTXS::WH) {
+              nWs++;
+              cat.V = Particle(24, uncatV_p4);
+            }
+            else if (prodMode==HTXS::QQ2ZH || prodMode==HTXS::GG2ZH) {
+              nZs++;
+              cat.V = Particle(23, uncatV_p4);
+            }
+          }
         }
       }
 
@@ -311,6 +325,9 @@ namespace Rivet {
 */
       // check if V-boson was not included in the event record but decay particles were
       // EFT contact interaction: return UNKNOWN for category but set all event/particle kinematics
+      //std::cout << is_uncatdV << std::endl;
+      //std::cout << "nWs" << nWs << std::endl;
+
       if (is_uncatdV)
         return error(cat, HTXS::VH_IDENTIFICATION, "Failed to identify associated V-boson!");
 

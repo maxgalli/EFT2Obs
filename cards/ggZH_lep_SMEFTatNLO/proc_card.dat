@@ -1,0 +1,11 @@
+import model SMEFTatNLO-ggZH
+
+define l+ = e+
+define l- = e-
+define vl = ve
+define vl~ = ve~
+
+generate g g > l+ l- h QCD=2 QED=3 NP=0 [noborn=QCD]
+add process g g > vl vl~ h QCD=2 QED=3 NP=0 [noborn=QCD]
+
+output ggZH_lep_SMEFTatNLO -nojpeg

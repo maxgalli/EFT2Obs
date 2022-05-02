@@ -197,6 +197,9 @@ if not finished:
         rivet_args.append('--ignore-beams')
     subprocess.check_call(rivet_args)
 
+    import yoda2json
+    yoda2json.main('%s/Rivet_%i.yoda' % (outdir, seed), '%s/Rivet_%i.json' % (outdir, seed))
+
 if save_hepmc is not None:
     subprocess.check_call(['mkdir', '-p', save_hepmc])
     subprocess.check_call(['gzip', '%s/events_%i.hepmc' % (tmpdir, seed)])

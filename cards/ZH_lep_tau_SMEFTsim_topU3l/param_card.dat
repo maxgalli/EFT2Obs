@@ -160,6 +160,63 @@ BLOCK SMEFT #
       128 0.000000e+00 # cleju3re
       129 0.000000e+00 # cleqt3re
 ###################################
+## INFORMATION FOR SMEFTCPV
+###################################
+BLOCK SMEFTCPV # 
+      1 0.000000e+00 # cgtil
+      2 0.000000e+00 # cwtil
+      3 0.000000e+00 # chgtil
+      4 0.000000e+00 # chwtil
+      5 0.000000e+00 # chbtil
+      6 0.000000e+00 # chwbtil
+      7 0.000000e+00 # cugim
+      8 0.000000e+00 # ctgim
+      9 0.000000e+00 # cuwim
+      10 0.000000e+00 # ctwim
+      11 0.000000e+00 # cubim
+      12 0.000000e+00 # ctbim
+      13 0.000000e+00 # cdgim
+      14 0.000000e+00 # cbgim
+      15 0.000000e+00 # cdwim
+      16 0.000000e+00 # cbwim
+      17 0.000000e+00 # cdbim
+      18 0.000000e+00 # cbbim
+      19 0.000000e+00 # cuhim
+      20 0.000000e+00 # cthim
+      21 0.000000e+00 # cdhim
+      22 0.000000e+00 # cbhim
+      23 0.000000e+00 # chudim
+      24 0.000000e+00 # chtbim
+      25 0.000000e+00 # cutbd1im
+      26 0.000000e+00 # cutbd8im
+      27 0.000000e+00 # cjqtu1im
+      28 0.000000e+00 # cjqtu8im
+      29 0.000000e+00 # cjqbd1im
+      30 0.000000e+00 # cjqbd8im
+      31 0.000000e+00 # cjujd1im
+      32 0.000000e+00 # cjujd8im
+      33 0.000000e+00 # cjujd11im
+      34 0.000000e+00 # cjujd81im
+      35 0.000000e+00 # cqtjd1im
+      36 0.000000e+00 # cqtjd8im
+      37 0.000000e+00 # cjuqb1im
+      38 0.000000e+00 # cjuqb8im
+      39 0.000000e+00 # cqujb1im
+      40 0.000000e+00 # cqujb8im
+      41 0.000000e+00 # cjtqd1im
+      42 0.000000e+00 # cjtqd8im
+      43 0.000000e+00 # cqtqb1im
+      44 0.000000e+00 # cqtqb8im
+      45 0.000000e+00 # cehim
+      46 0.000000e+00 # cewim
+      47 0.000000e+00 # cebim
+      48 0.000000e+00 # cledjim
+      49 0.000000e+00 # clebqim
+      50 0.000000e+00 # cleju1im
+      51 0.000000e+00 # cleju3im
+      52 0.000000e+00 # cleqt1im
+      53 0.000000e+00 # cleqt3im
+###################################
 ## INFORMATION FOR SMEFTCUTOFF
 ###################################
 BLOCK SMEFTCUTOFF # 
@@ -203,7 +260,7 @@ DECAY 9000008 4.070000e-03 # h1 : wh
 ###################################
 ## INFORMATION FOR QNUMBERS 9000005
 ###################################
-BLOCK QNUMBERS 9000005 #  z1
+BLOCK QNUMBERS 9000005 #   z1
       1 0 # 3 times electric charge
       2 3 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -211,7 +268,7 @@ BLOCK QNUMBERS 9000005 #  z1
 ###################################
 ## INFORMATION FOR QNUMBERS 9000006
 ###################################
-BLOCK QNUMBERS 9000006 #  w1+
+BLOCK QNUMBERS 9000006 #   w1+
       1 3 # 3 times electric charge
       2 3 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -219,7 +276,7 @@ BLOCK QNUMBERS 9000006 #  w1+
 ###################################
 ## INFORMATION FOR QNUMBERS 9000007
 ###################################
-BLOCK QNUMBERS 9000007 #  t1
+BLOCK QNUMBERS 9000007 #   t1
       1 2 # 3 times electric charge
       2 2 # number of spin states (2s+1)
       3 3 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -227,7 +284,7 @@ BLOCK QNUMBERS 9000007 #  t1
 ###################################
 ## INFORMATION FOR QNUMBERS 9000008
 ###################################
-BLOCK QNUMBERS 9000008 #  h1
+BLOCK QNUMBERS 9000008 #   h1
       1 0 # 3 times electric charge
       2 1 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)

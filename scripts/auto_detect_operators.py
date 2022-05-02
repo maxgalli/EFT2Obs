@@ -120,13 +120,19 @@ def findRelevantParameters1(process, possible_params):
   for coup in model.all_couplings:
     info = coup.get_all()
     if info['name'] in couplings:
+      #if type(info['value']) == dict:
+      #  assert len(info['value']) == 1, "%s \n %s"%(coup, info['value'])
+      #  value = info['value'].items()[0][1]
+      #else:
+      #  value = info['value']
+      #parameters.extend(re.split(regex, value.replace(" ", ""))) #split according to +-/*()
+
       if type(info['value']) == dict:
-        assert len(info['value']) == 1
-        value = info['value'].items()[0][1]
+        values = [item[1] for item in info['value'].items()]
       else:
-        value = info['value']
-      print(value)
-      parameters.extend(re.split(regex, value.replace(" ", ""))) #split according to +-/*()
+        values = [info['value']]
+      for value in values:
+        parameters.extend(re.split(regex, value.replace(" ", ""))) #split according to +-/*()
 
   return set(possible_params).intersection(parameters)
 
@@ -252,7 +258,7 @@ parser.add_argument('--noReweightCard', default=False, action="store_true", help
 parser.add_argument('--noConfigJson', default=False, action="store_true", help="Do not make a config json.")
 parser.add_argument('--ignore', default="Lambda", help="Comma seperated list of parameters to ignore, e.g. lambda")
 
-parser.add_argument('--def-val', type=float, default=0.01)
+parser.add_argument('--def-val', type=float, default=1.0)
 parser.add_argument('--set-inactive', type=str, nargs='*', help='')
 parser.add_argument('--def-sm', type=float, default=0.0)
 parser.add_argument('--def-gen', type=float, default=0.0)
