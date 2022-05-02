@@ -1,0 +1,10 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-decay_noYukawa
+
+define l+ = e+ mu+
+define l- = e- mu-
+define vl = ve vm
+define vl~ = ve~ vm~
+
+generate h > l+ vl l- vl~ NP<=1 SMHLOOP=0 NPprop=0
+
+output H_WW_SMEFTsim_topU3l -nojpeg

@@ -1,0 +1,7 @@
+import model SMEFTatNLO-ggH
+
+generate h > g g QED=1 NP=0 QCD=2 [noborn=QCD]
+
+#NP introduced in reweight cards
+
+output H_gg_SMEFTatNLO_tree_loop_4 -nojpeg

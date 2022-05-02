@@ -7,7 +7,7 @@ import importlib
 
 """SCRIPT IS SMEFTsim SPECIFIC!!!"""
 
-CONDOR_TEMPLATE="""executable            = run_rw_point.sh
+CONDOR_TEMPLATE="""executable            = additional_scripts/run_rw_point.sh
 arguments             = $(MG_process) $(rw_num) $(nevents) $(ncores)
 
 output                = directResults/%(process)s/condor_$(ClusterId)_rw_$(rw_num)_nevents_$(nevents).out
@@ -47,18 +47,21 @@ def loadModel(args):
 
 def getNPOrders(model, args):
   cfg = tools.GetConfigFile(args.config)
-  param_id_to_name = {int(each['index']): each['name'] for each in cfg['parameters']}
+  #add param name in args.pars so that args.pars = [[block1, id1, name1], [block1, id2, name2], [block2, id3, name3], ...]
+  for par in args.pars:
+    for each in cfg['parameters']:
+      if par == [each['block'], each['index']]:
+        par.append(each['name'])
+        break
 
   orders = list(filter(lambda x: "NP" in x, dir(model.coupling_orders)))
   
   #try to find matches between parameters and NP coupling order
-  param_orders = {}
-  for param_id in args.pars:
+  for par in args.pars:
     for order in orders:
-      if param_id_to_name[param_id].lower() == order.split("NP")[1].lower():
-        param_orders[param_id] = order
-        break
-  return param_orders  
+      if par[2].lower() == order.split("NP")[1].lower(): #if param names match up
+        par.append(order)
+        break   
 
 def setupProcesses(args):
   """
@@ -70,15 +73,24 @@ def setupProcesses(args):
    - for each param in --pars: bsm-bsm interference: NP<=1 NP^2==2 NPc[a]^2==1
   """
   copies = od()
-  copies["%s_sm_2"%args.process] = "NP=0"
-  copies["%s_sm_bsm"%args.process] = "NP<=1 NP^2==1"
-  copies["%s_bsm_2"%args.process] = "NP==1"
+  #copies["%s_sm_2"%args.process] = [["NP<=1", "NP=0"], ["NPprop<=2", "NPprop=0"]]
+  #copies["%s_sm_bsm"%args.process] = [["NP<=1", "NP<=1 NP^2==1"], ["NPprop<=2", "NPprop=0"]]
+  #copies["%s_bsm_2"%args.process] = [["NP<=1", "NP==1"], ["NPprop<=2", "NPprop=0"]]
+  #copies["%s_vertex_prop"%args.process] = [["NP<=1", "NP^2==1"], ["NPprop<=2", "NPprop^2==2"]]
+
+  copies["%s_sm_2"%args.process] = [["NPall<=2", "NPall=0"]]
+  copies["%s_sm_bsm"%args.process] = [["NPall<=2", "NPall<=2 NPall^2==2"]]
+  copies["%s_bsm_2"%args.process] = [["NPall<=2", "NPall==2"]]
+
+  #copies["%s_sm_2"%args.process] = [["NP<=1", "NP=0"]]
+  #copies["%s_sm_bsm"%args.process] = [["NP<=1", "NP<=1 NP^2==1"]]
+  #copies["%s_bsm_2"%args.process] = [["NP<=1", "NP==1"]]
 
   model = loadModel(args)
-  param_orders = getNPOrders(model, args)
+  getNPOrders(model, args)
   
-  for param in args.pars:
-    copies["%s_bsm_bsm_%s"%(args.process, param)] = "NP<=1 NP^2==2 %s^2==1"%param_orders[param]
+  #for par in args.pars:
+  #  copies["%s_bsm_bsm_%s"%(args.process, "%s_%d"%(par[0], par[1]))] = [["NP<=1", "NP<=1 NP^2==2 %s^2==1"%par[3]], ["NPprop<=2", "NPprop=0"]]
   
   print(">> Need copies of the process according to:")
   for copy in copies.keys():
@@ -97,13 +109,17 @@ def setupProcesses(args):
         with open(os.path.join("cards", copy, "proc_card.dat"), "r") as f:
           proc_card = f.read()
         proc_card = proc_card.replace("generate", "set group_subprocesses True \ngenerate")
-        proc_card = proc_card.replace("NP<=1", copies[copy]) #replace NP coupling order
+        for replacement in copies[copy]:
+          proc_card = proc_card.replace(replacement[0], replacement[1]) #replace NP coupling order
+        #proc_card = proc_card.replace("NP<=1", copies[copy]) #replace NP coupling order
         proc_card = proc_card.replace(args.process, copy) #replace output line
         with open(os.path.join("cards", copy, "proc_card.dat"), "w") as f:
           f.write(proc_card)
         print("> New proc_card:")
         print(proc_card)
         os.system("./scripts/setup_process.sh %s"%copy)
+        os.system("cp cards/%s/{param,reweight,run,pythia8}_card.dat %s/%s/Cards/"%(copy, MG_DIR, copy))
+        os.system("cp cards/%s/pythia8_card.dat %s/%s/Cards/pythia8_card_default.dat"%(copy, MG_DIR, copy))
         pwd = os.getcwd()
         os.chdir(MG_DIR)
         os.system("tar -zcf proc_dir_%s.tar.gz %s/"%(copy, copy))
@@ -132,11 +148,14 @@ def getRwNums(args):
       sett, block, param, val = set_line.split(" ")
 
       if float(val) != 0:
-        if int(param) in args.pars:
+        if [block, int(param)] in args.pars:
           if float(rw_num)/2 > n_par: #cross term
-            rw_nums.append([rw_num, "%s_bsm_bsm_%s"%(args.process, param)])
+            #rw_nums.append([rw_num, "%s_bsm_bsm_%s"%(args.process, "%s_%d"%(block, int(param)))])
+            #rw_nums.append([rw_num, "%s_vertex_prop"%args.process])
+            rw_nums.append([rw_num, "%s_bsm_2"%args.process])
           elif rw_num % 2 == 0: #quadratic
             rw_nums.append([rw_num, "%s_bsm_2"%args.process])
+            #rw_nums.append([rw_num, "%s_vertex_prop"%args.process])
           else: #linear
             rw_nums.append([rw_num, "%s_sm_bsm"%args.process])
           break
@@ -180,8 +199,16 @@ for block_params in args.pars:
   params = params.split(",")
   params_dict[block] = [int(param) for param in params]
 
-assert params_dict.keys() == ["SMEFT"]
-args.pars = params_dict["SMEFT"]
+#assert params_dict.keys() == ["SMEFT"]
+#args.pars = params_dict["SMEFT"]
+
+assert set(params_dict.keys()).difference(["SMEFT", "SMEFTcpv"]) == set() # assert only SMEFT and/or SMEFTcpb
+pars = []
+for block in params_dict.keys():
+  for param in params_dict[block]:
+    pars.append([block, param])
+args.pars = pars
+print(args.pars)
 
 args.rw_nums = getRwNums(args)
 for each in args.rw_nums:

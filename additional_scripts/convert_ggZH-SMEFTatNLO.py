@@ -2,146 +2,159 @@ import json
 from collections import OrderedDict
 import argparse
 import numpy as np
-
-#helper function for reading json and converting keys to integers
-def keysToInt(x):
-  od = OrderedDict()
-  for k, v in x:
-    od[int(k)] = v
-  return od
-
-def jsonToNewDict(eft2obs_json, key):
-  new_json_dict = OrderedDict()
-  
-  tags = [edges[0] for edges in eft2obs_json['edges']]
-
-  for i, tag in enumerate(tags):
-    if key is not None:
-      if tag not in key.keys(): #if this bin shouldn't exist
-        warnings.warn("Found a bin in EFT2Obs json that does not exist in the key. Expected (and probably isn't a problem) if >1 STXS stage 0 processes in a dataset, e.g. VH")
-        continue
-
-    bin_dict = OrderedDict()
-    for param_info in eft2obs_json['bins'][i]:
-      #linear terms
-      if len(param_info) == 3:
-        bin_dict["A_%s"%param_info[2]] = param_info[0]
-        bin_dict["u_A_%s"%param_info[2]] = param_info[1]
-      #quadratic terms
-      elif param_info[2]==param_info[3]:
-        bin_dict["B_%s_2"%param_info[2]] = param_info[0]
-        bin_dict["u_B_%s_2"%param_info[2]] = param_info[1]
-      #cross terms
-      else:
-        bin_dict["B_%s_%s"%(param_info[2], param_info[3])] = param_info[0]
-        bin_dict["u_B_%s_%s"%(param_info[2], param_info[3])] = param_info[1]
-    
-    #if key available use it
-    if key is not None:
-      name = key[tag]
-    else:
-      name = tag
-    new_json_dict[name] = bin_dict
-
-  return new_json_dict
+import os
 
 def getTerm(eqn, key):
   if key in eqn.keys(): return [eqn[key], eqn["u_"+key]]
   else: return [0,0]
 
-conversion = {
- "cll1221": "cll1",
- "cpdc": "chdd",
- "cdp": "chbox",
- "c3pl1": "chl3",
- "c3pl2": "chl3",
- "cpqm": "chq1",
- "cpt": "cht",
- "ctp": "cth",
- "cpd": "chd", 
-}
+one_to_one_conversion = OrderedDict()
+one_to_one_conversion["cll1221"] = "cll1"
+one_to_one_conversion["cpdc"] = "chdd"
+one_to_one_conversion["cdp"] = "chbox"
+one_to_one_conversion["c3pl1"] = "chl3"
+one_to_one_conversion["c3pl2"] = "chl3"
+one_to_one_conversion["cpq3i"] = "chj3"
+one_to_one_conversion["cpq3"] = "chq3"
+one_to_one_conversion["cpu"] = "chu"
+one_to_one_conversion["cpt"] = "cht"
+one_to_one_conversion["cpd"] = "chd"
+one_to_one_conversion["ctp"] = "cthre"
+one_to_one_conversion["ctg"] = "ctgre"
+one_to_one_conversion["cpg"] = "chg"
 
-to_drop = ["cpq3", "i"]
+print(one_to_one_conversion)
+
+# def rotationConversion(eqns):
+#   #rotation conversion: cpqmi = chj1-chj3, cpqm = chq1-chq3
+#   for stxs_bin in eqns.keys():
+#     for key in eqns[stxs_bin].keys():
+#       if ("cpqmi" in key) or ("cpqm" in key):
+#         value = eqns[stxs_bin][key]
+#         del eqns[stxs_bin][key]
+
+#         if "cpqmi" in key:
+#           eqns[stxs_bin][key.replace("cpqmi", "chj1")] = value
+#           if key[0] == "A":
+#             eqns[stxs_bin][key.replace("cpqmi", "chj3")] = -value
+#           else:
+#             eqns[stxs_bin][key.replace("cpqmi", "chj3")] = value
+
+#           if key[-1] == "B": #if key == B_c_2
+#             eqns[stxs_bin]["B"]
+#         else:
+#           eqns[stxs_bin][key.replace("cpqm", "chq1")] = value
+#           if key[0] == "A":
+#             eqns[stxs_bin][key.replace("cpqm", "chq3")] = -value
+#           else:
+#             eqns[stxs_bin][key.replace("cpqm", "chq3")] = value
+#   return eqns
+#   #print(json.dumps(eqns["GG2HLL"], indent=4))
+
+def rotationConversion(eqns):
+  #rotation conversion: cpqmi = chj1-chj3, cpqm = chq1-chq3
+  for stxs_bin in eqns.keys():
+    eqns[stxs_bin]["A_chj1"] = eqns[stxs_bin]["A_cpqmi"]
+    eqns[stxs_bin]["u_A_chj1"] = eqns[stxs_bin]["u_A_cpqmi"]
+    eqns[stxs_bin]["A_chj3"] = -eqns[stxs_bin]["A_cpqmi"]
+    eqns[stxs_bin]["u_A_chj3"] = eqns[stxs_bin]["u_A_cpqmi"]
+
+    eqns[stxs_bin]["A_chq1"] = eqns[stxs_bin]["A_cpqm"]
+    eqns[stxs_bin]["u_A_chq1"] = eqns[stxs_bin]["u_A_cpqm"]
+    eqns[stxs_bin]["A_chq3"] = -eqns[stxs_bin]["A_cpqm"]
+    eqns[stxs_bin]["u_A_chq3"] = eqns[stxs_bin]["u_A_cpqm"]
+
+
+    eqns[stxs_bin]["B_chj1_2"] = eqns[stxs_bin]["B_cpqmi_2"]
+    eqns[stxs_bin]["u_B_chj1_2"] = eqns[stxs_bin]["u_B_cpqmi_2"]
+    eqns[stxs_bin]["B_chj3_2"] = eqns[stxs_bin]["B_cpqmi_2"]
+    eqns[stxs_bin]["u_B_chj3_2"] = eqns[stxs_bin]["u_B_cpqmi_2"]
+
+    eqns[stxs_bin]["B_chq1_2"] = eqns[stxs_bin]["B_cpqm_2"]
+    eqns[stxs_bin]["u_B_chq1_2"] = eqns[stxs_bin]["u_B_cpqm_2"]
+    eqns[stxs_bin]["B_chq3_2"] = eqns[stxs_bin]["B_cpqm_2"]
+    eqns[stxs_bin]["u_B_chq3_2"] = eqns[stxs_bin]["u_B_cpqm_2"]
+
+
+    eqns[stxs_bin]["B_chj1_chj3"] = -2*eqns[stxs_bin]["B_cpqmi_2"]
+    eqns[stxs_bin]["u_B_chj1_chj3"] = 2*eqns[stxs_bin]["u_B_cpqmi_2"]
+    eqns[stxs_bin]["B_chq3_chq1"] = -2*eqns[stxs_bin]["B_cpqm_2"]
+    eqns[stxs_bin]["u_B_chq3_chq1"] = 2*eqns[stxs_bin]["u_B_cpqm_2"]
+
+
+    for param in filter(lambda x: x[:2] != "u_", eqns[stxs_bin].keys()):
+      if (param[0] == "B") and (param[-2:] != "_2"): #if cross term
+        if "cpqmi" in param:
+          eqns[stxs_bin][param.replace("cpqmi", "chj1")] = eqns[stxs_bin][param]
+          eqns[stxs_bin]["u_"+param.replace("cpqmi", "chj1")] = eqns[stxs_bin]["u_"+param]
+          eqns[stxs_bin][param.replace("cpqmi", "chj3")] = -eqns[stxs_bin][param]
+          eqns[stxs_bin]["u_"+param.replace("cpqmi", "chj3")] = eqns[stxs_bin]["u_"+param]
+        elif "cpqm" in param:
+          eqns[stxs_bin][param.replace("cpqm", "chq1")] = eqns[stxs_bin][param]
+          eqns[stxs_bin]["u_"+param.replace("cpqm", "chq1")] = eqns[stxs_bin]["u_"+param]
+          eqns[stxs_bin][param.replace("cpqm", "chq3")] = -eqns[stxs_bin][param]
+          eqns[stxs_bin]["u_"+param.replace("cpqm", "chq3")] = eqns[stxs_bin]["u_"+param]
+
+    for key in eqns[stxs_bin].keys():
+      if ("cpqmi" in key) or ("cpqm" in key):
+        del eqns[stxs_bin][key]
+
+  return eqns
+  #print(json.dumps(eqns["GG2HLL"], indent=4))
 
 def convert_SMEFTatNLO_To_SMEFTsim(eqns):
+  eqns = rotationConversion(eqns)
+
+  a_s = 0.1181
+  g_s = 2*np.sqrt(a_s*np.pi)
+
   for stxs_bin in eqns.keys():
+    print(stxs_bin)
     params = filter(lambda x: x[:2] != "u_", eqns[stxs_bin].keys())
    
     converted_eqn = OrderedDict() 
     for param in sorted(params):
-      drop_param = False
-      for to_drop_param in to_drop:
-        if to_drop_param in param:
-          drop_param = True
+      term = getTerm(eqns[stxs_bin], param)
+      for key, value in one_to_one_conversion.items():
+        param = param.replace(key, value)
 
-      if not drop_param:
-        term = getTerm(eqns[stxs_bin], param)
-        for key, value in conversion.items():
-	  param = param.replace(key, value)
-          if param == "B_chl3_chl3":
-            param = "B_chl3_2"
-  
-        if param not in converted_eqn.keys():
-          converted_eqn[param] = 0
-          converted_eqn["u_"+param] = 0
-      
+      #print(param, param[-2:], param.split("_"))
+      #if term is like B_chl3_chl3
+      if (param[0] == "B") and (param[-2:] != "_2") and (param.split("_")[1] == param.split("_")[2]):
+        param = "B_%s_2"%(param.split("_")[1])
+   
+      if "ctg" in param:
+        if "_2" not in param:
+           term[0] /= -g_s
+           term[1] /= g_s
+        else:
+           term[0] /= (-g_s)**2
+           term[1] /= g_s**2
+
+      #if chl3 term already exsits, add contribution on top
+      if param in converted_eqn.keys():
+        #print(param)
+        #if "chj3" in param: print(converted_eqn[param], term[0])
         converted_eqn[param] += term[0]
         converted_eqn["u_"+param] = np.sqrt(converted_eqn["u_"+param]**2 + term[1]**2)
+      else:
+        converted_eqn[param] = term[0]
+        converted_eqn["u_"+param] = term[1]
     eqns[stxs_bin] = converted_eqn
   return eqns
 
-"""
-def addOtherParams(eqns):
-  v = 0.24622
-  params = OrderedDict()
-  params["chbox"] = 1
-  params["chdd"] = -0.25
-  params["chl3"] = -1
-  params["cll1"] = 0.5
-
-  print(params.keys())
-  n_par = len(params)
-
-  stxs_bins = eqns.keys()
-
-  for stxs_bin in stxs_bins:
-    if eqns[stxs_bin].keys() == []: continue
-    original_params = filter(lambda x: x[:2] == "A_", eqns[stxs_bin].keys())
-    original_params = [param[2:] for param in original_params]
-
-    for param in params.keys():
-      eqns[stxs_bin]["A_%s"%param] = params[param]*2*v**2
-      eqns[stxs_bin]["u_A_%s"%param] = 0
-
-    for i, p1 in enumerate(params.keys()):
-      for j, p2 in enumerate(params.keys()):
-        if p1 == p2:
-          eqns[stxs_bin]["B_%s_2"%p1] = params[p1]*params[p1]*v**4
-          eqns[stxs_bin]["u_B_%s_2"%p1] = 0
-        elif j > i:
-          eqns[stxs_bin]["B_%s_%s"%(p1, p2)] = params[p1]*params[p2]*2*v**4
-          eqns[stxs_bin]["u_B_%s_%s"%(p1, p2)] = 0
-    
-      for p3 in original_params:
-        eqns[stxs_bin]["B_%s_%s"%(p1, p3)] = (params[p1]*2*v**2 * eqns[stxs_bin]["A_%s"%p3]) / 2
-        eqns[stxs_bin]["u_B_%s_%s"%(p1, p3)] = (params[p1]*2*v**2 * eqns[stxs_bin]["u_A_%s"%p3]) / 2
-  return eqns
-"""
-
 parser = argparse.ArgumentParser()
-parser.add_argument('--output', '-o', default="ggZH-SMEFTatNLO_converted.json")
-parser.add_argument('--key', help="Key to interpret bin numbers.")
+parser.add_argument('--input-dir', '-i', type=str, default="ConvertedEquations/")
+parser.add_argument('--output', '-o', default="ConvertedEquations/ggZH_SMEFTatNLO_combined.json")
+parser.add_argument('--postfix', type=str, default="")
 args = parser.parse_args()
 
-with open(args.key, "r") as f:
-  key = json.loads(f.read(), object_pairs_hook=keysToInt)
-key = {i:key[tag] for i, tag in enumerate(key.keys())}
-
-with open("ggZH-SMEFTatNLO.json", "r") as f:
-  eqns = jsonToNewDict(json.load(f), key)
+with open(os.path.join(args.input_dir, "ggZH_SMEFTatNLO_%s.json"%args.postfix), "r") as f:
+  eqns = json.load(f)
 
 converted_eqns = convert_SMEFTatNLO_To_SMEFTsim(eqns)
-#combined_eqn = addOtherParams(combined_eqn)
+
+#print(converted_eqns.keys())
 
 with open(args.output, "w") as f:
   json.dump(converted_eqns, f, indent=4)

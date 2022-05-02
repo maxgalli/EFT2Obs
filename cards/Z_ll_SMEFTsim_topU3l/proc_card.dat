@@ -1,0 +1,8 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-decay
+
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta-
+
+generate z > l+ l- NP<=1 SMHLOOP=0 NPprop=0
+
+output Z_ll_SMEFTsim_topU3l -nojpeg

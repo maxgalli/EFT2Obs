@@ -39,6 +39,10 @@ def MaybeMakeDir(pathname):
         print '>> Creating directory %s' % pathname
         subprocess.check_call(['mkdir', '-p', pathname])
 
+def getGridpackPath(pathname, relbase):
+    if os.path.exists(pathname):
+        return pathname
+    return os.path.join(relbase, pathname)
 
 # Path we're running from
 iwd = os.getcwd()
@@ -50,7 +54,8 @@ madgraph_dir = os.path.abspath(args.madgraph_dir)
 outdir = ResolvePath(args.outdir, args.launch_dir)
 MaybeMakeDir(outdir)
 
-gridpack = ResolvePath(args.gridpack, args.launch_dir)
+#gridpack = ResolvePath(args.gridpack, args.launch_dir)
+gridpack = getGridpackPath(args.gridpack, args.launch_dir)
 print '>> Writing yoda output to %s' % outdir
 
 events = args.events
@@ -191,6 +196,9 @@ if not finished:
     if ignore_beams:
         rivet_args.append('--ignore-beams')
     subprocess.check_call(rivet_args)
+
+    import yoda2json
+    yoda2json.main('%s/Rivet_%i.yoda' % (outdir, seed), '%s/Rivet_%i.json' % (outdir, seed))
 
 if save_hepmc is not None:
     subprocess.check_call(['mkdir', '-p', save_hepmc])

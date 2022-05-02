@@ -4,6 +4,7 @@ import json
 import argparse
 import yoda
 
+DO_PRINT = False
 
 def BinStats(b):
     if b.numEntries == 0:
@@ -80,7 +81,7 @@ for i in xrange(n_hists):
     else:
         hists.append(aos['%s[rw%.4i]' % (hname, i)])
 
-# print hists
+# if DO_PRINT: print hists
 is2D = isinstance(hists[0], yoda.Histo2D)
 
 if args.rebin is not None and not is2D:
@@ -114,7 +115,7 @@ n_divider = 65
 
 
 def PrintEntry(label, val, err):
-    print '%-20s | %12.4f | %12.4f | %12.4f' % (label, val, err, abs(err / val))
+    if DO_PRINT: print '%-20s | %12.4f | %12.4f | %12.4f' % (label, val, err, abs(err / val))
 
 if args.bin_labels is not None:
     res["bin_labels"] = bin_labels[args.hist]
@@ -122,19 +123,23 @@ if args.bin_labels is not None:
 for ib in xrange(nbins):
     terms = []
     sm = BinStats(hists[0].bins[ib])
-    print '-' * n_divider
-    print 'Bin %-4i numEntries: %-10i mean: %-10.3g stderr: %-10.3g' % (ib, hists[0].bins[ib].numEntries, sm[0], sm[1])
+    if DO_PRINT: print '-' * n_divider
+    if DO_PRINT: print 'Bin %-4i numEntries: %-10i mean: %-10.3g stderr: %-10.3g' % (ib, hists[0].bins[ib].numEntries, sm[0], sm[1])
     extra_label = ''
     if args.bin_labels is not None:
         extra_label += ', label=%s' % res["bin_labels"][ib]
-    print '         edges: %s%s' % (res['edges'][ib], extra_label)
-    print '-' * n_divider
+    if DO_PRINT: print '         edges: %s%s' % (res['edges'][ib], extra_label)
+    if DO_PRINT: print '-' * n_divider
+
+    #print("Using hard coded SM")
+    #sm[0] = 5.27107e-2/5.2287e4
+
     if sm[0] == 0:
         res["bins"].append(terms)
         continue
     else:
-        print '%-20s | %12s | %12s | %12s' % ('Term', 'Val', 'Uncert', 'Rel. uncert.')
-        print '-' * n_divider
+        if DO_PRINT: print '%-20s | %12s | %12s | %12s' % ('Term', 'Val', 'Uncert', 'Rel. uncert.')
+        if DO_PRINT: print '-' * n_divider
     for ip in xrange(len(pars)):
         lin = BinStats(hists[ip * 2 + 1].bins[ib])
         if lin[0] == 0.:
@@ -151,7 +156,7 @@ for ib in xrange(nbins):
         sqr[1] = sqr[1] / (sm[0] * pars[ip]['val'] * pars[ip]['val'])
 
         PrintEntry('%s^2' % pars[ip]['name'], sqr[0], sqr[1])
-        # print '(%f +/- %f) * %s^2 (%f)' % (sqr[0], sqr[1], pars[ip]['name'], sqr[1]/sqr[0])
+        # if DO_PRINT: print '(%f +/- %f) * %s^2 (%f)' % (sqr[0], sqr[1], pars[ip]['name'], sqr[1]/sqr[0])
         terms.append([sqr[0], sqr[1], pars[ip]['name'], pars[ip]['name']])
     ic = 0
     for ix in xrange(0, len(pars)):
@@ -160,7 +165,7 @@ for ib in xrange(nbins):
             if cross[0] != 0.:
                 cross[0] = cross[0] / (sm[0] * pars[ix]['val'] * pars[iy]['val'])
                 cross[1] = cross[1] / (sm[0] * pars[ix]['val'] * pars[iy]['val'])
-                # print '(%f +/- %f) * %s *%s (%f)' % (cross[0], cross[1], pars[ix]['name'], pars[iy]['name'], cross[1]/cross[0])
+                # if DO_PRINT: print '(%f +/- %f) * %s *%s (%f)' % (cross[0], cross[1], pars[ix]['name'], pars[iy]['name'], cross[1]/cross[0])
                 PrintEntry('%s * %s' % (pars[ix]['name'], pars[iy]['name']), cross[0], cross[1])
                 terms.append([cross[0], cross[1], pars[ix]['name'], pars[iy]['name']])
             ic += 1
@@ -172,12 +177,12 @@ for ib in xrange(nbins):
     res["bins"].append(filtered_terms)
 
 if 'json' in save_formats:
-    print '>> Saving histogram parametrisation to %s.json' % args.output
+    if DO_PRINT: print '>> Saving histogram parametrisation to %s.json' % args.output
     with open('%s.json' % args.output, 'w') as outfile:
             outfile.write(json.dumps(res, sort_keys=False, indent=2, separators=(',', ': ')))
 
 if 'txt' in save_formats:
-    print '>> Saving histogram parametrisation to %s.txt' % args.output
+    if DO_PRINT: print '>> Saving histogram parametrisation to %s.txt' % args.output
     txt_out = []
     for ib in xrange(nbins):
         if is2D:
@@ -197,7 +202,7 @@ if 'txt' in save_formats:
             outfile.write('\n'.join(txt_out))
 
 if 'tex' in save_formats:
-    print '>> Saving histogram parametrisation to %s.tex' % args.output
+    if DO_PRINT: print '>> Saving histogram parametrisation to %s.tex' % args.output
     txt_out = []
     txt_out.append(r"""\begin{table}[htb]
     \centering

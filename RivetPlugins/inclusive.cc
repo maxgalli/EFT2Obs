@@ -10,11 +10,11 @@ namespace Rivet {
 
 
   /// @brief Add a short analysis description here
-  class test : public Analysis {
+  class inclusive : public Analysis {
   public:
 
     /// Constructor
-    DEFAULT_RIVET_ANALYSIS_CTOR(test);
+    DEFAULT_RIVET_ANALYSIS_CTOR(inclusive);
 
 
     /// @name Analysis methods
@@ -35,7 +35,7 @@ namespace Rivet {
     /// Normalise histograms etc., after the run
     void finalize() {
       double sf = crossSection() / picobarn / sumOfWeights();
-      scale(_h["ZZZZ"], sf); // norm to cross section
+      scale(_h["XXXX"], sf); // norm to cross section
     }
 
     //@}
@@ -53,7 +53,7 @@ namespace Rivet {
 
 
   // The hook for the plugin system
-  DECLARE_RIVET_PLUGIN(test);
+  DECLARE_RIVET_PLUGIN(inclusive);
 
 
 }

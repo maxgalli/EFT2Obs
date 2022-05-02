@@ -1,0 +1,7 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-decay
+
+define v = ve ve~ vm vm~ vt vt~ 
+
+generate z > v v NP<=1 SMHLOOP=0 NPprop=0
+
+output Z_vv_SMEFTsim_topU3l -nojpeg

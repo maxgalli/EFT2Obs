@@ -34,7 +34,7 @@ def getEqnVal(eqn, bin_name, param_vals):
 
 def getNonEmptyBinNames(eqn):
   names = eqn.keys()
-  print(names)
+  #print(names)
   non_empty_names = []
   for name in names:
     if len(eqn[name]) > 0:
@@ -93,6 +93,8 @@ def deriveEquation(eqns, function_str, linear_only, x=1e-4):
     bin_names = ["inclusive"]
   else:
     bin_names = result
+
+  #print(bin_names)
 
   all_params = findAllParams(eqns)
   new_eqns = {}

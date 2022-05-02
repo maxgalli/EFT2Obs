@@ -88,6 +88,10 @@ def makeReweight(process):
   command = "python scripts/make_reweight_card.py cards/%s/config.json cards/%s/reweight_card.dat"%(process, process)
   os.system(command)
 
+def makeParam(process):
+  print(">> Making param card")
+  command = "python scripts/make_param_card.py -p %s -c cards/%s/config.json -o cards/%s/param_card.dat"%(process, process, process)
+  os.system(command)
 
 """Method 1"""
 
@@ -116,7 +120,19 @@ def findRelevantParameters1(process, possible_params):
   for coup in model.all_couplings:
     info = coup.get_all()
     if info['name'] in couplings:
-      parameters.extend(re.split(regex, info['value'].replace(" ", ""))) #split according to +-/*()
+      #if type(info['value']) == dict:
+      #  assert len(info['value']) == 1, "%s \n %s"%(coup, info['value'])
+      #  value = info['value'].items()[0][1]
+      #else:
+      #  value = info['value']
+      #parameters.extend(re.split(regex, value.replace(" ", ""))) #split according to +-/*()
+
+      if type(info['value']) == dict:
+        values = [item[1] for item in info['value'].items()]
+      else:
+        values = [info['value']]
+      for value in values:
+        parameters.extend(re.split(regex, value.replace(" ", ""))) #split according to +-/*()
 
   return set(possible_params).intersection(parameters)
 
@@ -240,9 +256,9 @@ parser.add_argument('--blocks', '-b', default="SMEFT", help="Comma seperated lis
 parser.add_argument('--noValidation', default=False, action="store_true", help="Only use method 1. Do not bother using method 2 to validate")
 parser.add_argument('--noReweightCard', default=False, action="store_true", help="Do not make a reweight card.")
 parser.add_argument('--noConfigJson', default=False, action="store_true", help="Do not make a config json.")
+parser.add_argument('--ignore', default="Lambda", help="Comma seperated list of parameters to ignore, e.g. lambda")
 
-
-parser.add_argument('--def-val', type=float, default=0.01)
+parser.add_argument('--def-val', type=float, default=1.0)
 parser.add_argument('--set-inactive', type=str, nargs='*', help='')
 parser.add_argument('--def-sm', type=float, default=0.0)
 parser.add_argument('--def-gen', type=float, default=0.0)
@@ -251,6 +267,7 @@ args = parser.parse_args()
 
 process = args.process
 blocks = args.blocks.split(",")
+params_to_ignore = args.ignore.split(",")
 
 model = loadModel(process)
 smeftsim_v3 = ("SMEFTsim" in model.__name__) and (int(model.__version__[0]) == 3)
@@ -276,9 +293,15 @@ if smeftsim_v3:
 else:
   relevant_params = sorted(p1)
 
+for param in params_to_ignore:
+  if param in relevant_params:
+    print(">> Ignoring parameter: %s in selection"%param)
+    relevant_params.remove(param)
+
 print(">> Final relevant parameters: %s"%relevant_params)
 
 if not args.noConfigJson:
   makeConfig(process, model, relevant_params, args)
 if not args.noConfigJson and not args.noReweightCard:
   makeReweight(process)
+  makeParam(process)
