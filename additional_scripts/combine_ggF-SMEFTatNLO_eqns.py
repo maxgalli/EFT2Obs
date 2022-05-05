@@ -69,7 +69,7 @@ def convert_SMEFTatNLO_To_SMEFTsim(eqns):
 
       #if chl3 term already exsits, add contribution on top
       if param in converted_eqn.keys():
-        print(param)
+        #print(param)
         converted_eqn[param] += term[0]
         converted_eqn["u_"+param] = np.sqrt(converted_eqn["u_"+param]**2 + term[1]**2)
       else:
@@ -114,6 +114,18 @@ def convert_SMEFTatNLO_To_SMEFTsim(eqns):
 #         eqns[stxs_bin]["u_B_%s_%s"%(p1, p3)] = (params[p1]*2*v**2 * eqns[stxs_bin]["u_A_%s"%p3]) / 2
 #   return eqns
 
+def contractEquations(loop, tree, tree_loop_2, tree_loop_4):
+  """Make sure all equations have the same bins. Sometimes a bin is occupied in one equation but not another."""
+  common_bin_names = set(loop.keys())
+  for each in [tree, tree_loop_2, tree_loop_4]:
+    common_bin_names = common_bin_names.intersection(each.keys())
+  
+  for each in [loop, tree, tree_loop_2, tree_loop_4]:
+    for bin_name in each.keys():
+      if bin_name not in common_bin_names:
+        print("Deleting %s"%bin_name)
+        del each[bin_name]
+
 def main(input_dir, output, postfix):
   with open(os.path.join(input_dir, "ggH_SMEFTatNLO_loop_%s.json"%postfix), "r") as f:
     loop = json.load(f)
@@ -124,6 +136,7 @@ def main(input_dir, output, postfix):
   with open(os.path.join(input_dir, "ggH_SMEFTatNLO_tree_loop_4_%s.json"%postfix), "r") as f:
     tree_loop_4 = json.load(f)
 
+  contractEquations(loop, tree, tree_loop_2, tree_loop_4)
   combined_eqn = combineEqns(loop, tree, tree_loop_2, tree_loop_4)
   combined_eqn = convert_SMEFTatNLO_To_SMEFTsim(combined_eqn)
   #combined_eqn = addOtherParams(combined_eqn)

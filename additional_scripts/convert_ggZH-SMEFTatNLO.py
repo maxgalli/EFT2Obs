@@ -23,7 +23,7 @@ one_to_one_conversion["ctp"] = "cthre"
 one_to_one_conversion["ctg"] = "ctgre"
 one_to_one_conversion["cpg"] = "chg"
 
-print(one_to_one_conversion)
+#print(one_to_one_conversion)
 
 # def rotationConversion(eqns):
 #   #rotation conversion: cpqmi = chj1-chj3, cpqm = chq1-chq3

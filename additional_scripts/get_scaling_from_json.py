@@ -124,17 +124,17 @@ for ib in xrange(nbins):
     if DO_PRINT: print '         edges: %s%s' % (res['edges'][ib], extra_label)
     if DO_PRINT: print '-' * n_divider
 
-    # print("HARD CODED SM VALUE!!!")
-    # sumW = 2508.7374100000006
-    # sumW2 = 128.5552878
-    # numEntries = 48987
-    # mean = sumW / numEntries
-    # stderr2 = (sumW2 / numEntries) - math.pow(mean, 2)
-    # if stderr2 < 0.:
-    #     stderr = 0.
-    # else:
-    #     stderr = math.sqrt(stderr2 / numEntries)
-    # sm = [mean, stderr]
+    print("HARD CODED SM VALUE!!!")
+    sumW = 954.8003900000002
+    sumW2 = 18.336944599999995
+    numEntries = 49733
+    mean = sumW / numEntries
+    stderr2 = (sumW2 / numEntries) - math.pow(mean, 2)
+    if stderr2 < 0.:
+        stderr = 0.
+    else:
+        stderr = math.sqrt(stderr2 / numEntries)
+    sm = [mean, stderr]
 
     if sm[0] == 0:
         res["bins"].append(terms)

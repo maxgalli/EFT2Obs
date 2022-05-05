@@ -261,7 +261,7 @@ DECAY 9000008 4.070000e-03 # h1 : wh
 ###################################
 ## INFORMATION FOR QNUMBERS 9000005
 ###################################
-BLOCK QNUMBERS 9000005 #   z1
+BLOCK QNUMBERS 9000005 #  z1
       1 0 # 3 times electric charge
       2 3 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -269,7 +269,7 @@ BLOCK QNUMBERS 9000005 #   z1
 ###################################
 ## INFORMATION FOR QNUMBERS 9000006
 ###################################
-BLOCK QNUMBERS 9000006 #   w1+
+BLOCK QNUMBERS 9000006 #  w1+
       1 3 # 3 times electric charge
       2 3 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -277,7 +277,7 @@ BLOCK QNUMBERS 9000006 #   w1+
 ###################################
 ## INFORMATION FOR QNUMBERS 9000007
 ###################################
-BLOCK QNUMBERS 9000007 #   t1
+BLOCK QNUMBERS 9000007 #  t1
       1 2 # 3 times electric charge
       2 2 # number of spin states (2s+1)
       3 3 # colour rep (1: singlet, 3: triplet, 8: octet)
@@ -285,7 +285,7 @@ BLOCK QNUMBERS 9000007 #   t1
 ###################################
 ## INFORMATION FOR QNUMBERS 9000008
 ###################################
-BLOCK QNUMBERS 9000008 #   h1
+BLOCK QNUMBERS 9000008 #  h1
       1 0 # 3 times electric charge
       2 1 # number of spin states (2s+1)
       3 1 # colour rep (1: singlet, 3: triplet, 8: octet)

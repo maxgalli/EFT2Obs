@@ -2,6 +2,7 @@ import json
 import sys
 from collections import OrderedDict
 import numpy as np
+import threading
 
 def tqdm(iterable):
   for i, item in enumerate(iterable):
@@ -37,9 +38,9 @@ def getBinEdges(loaded_file, hist_name):
 
 def expandFile(loaded_file, hist_name, rw_names, bin_edges):
   """If rw_name does not exist in file, create it with sumw=0"""
-  for rw_name in rw_names:
-    if rw_name not in loaded_file.keys():
-      loaded_file[rw_name] = [[0.,0.] for i in range(len(getActiveBins(loaded_file, hist_name)))]
+  rw_names_not_exist = set(rw_names).difference(loaded_file.keys())
+  for rw_name in rw_names_not_exist:
+    loaded_file[rw_name] = [[0.,0.] for i in getActiveBins(loaded_file, hist_name)]
 
   active_bins = getActiveBins(loaded_file, hist_name)
   for i in range(len(bin_edges)):
@@ -56,12 +57,23 @@ def combineActiveBins(file1, file2, hist_name):
     active_bins_1[i][1] += active_bins_2[i][1]
   return active_bins_1
 
+def loadJson(input_file, loaded_files):
+  with open(input_file, "r") as f:
+    loaded_files.append(json.load(f, object_pairs_hook=OrderedDict))
+
 def merge(output_file, input_files):
-  loaded_files = []
   print(">> Loading files")
-  for input_file in tqdm(input_files):
-    with open(input_file, "r") as f:
-      loaded_files.append(json.load(f, object_pairs_hook=OrderedDict))
+  loaded_files = []
+  # for input_file in tqdm(input_files):
+  #   with open(input_file, "r") as f:
+  #     loaded_files.append(json.load(f, object_pairs_hook=OrderedDict))
+  threads = []
+  for input_file in input_files:
+   thread = threading.Thread(target=loadJson, args=(input_file, loaded_files))
+   thread.start()
+   threads.append(thread)
+  for thread in tqdm(threads):
+    thread.join()  
 
   hist_names = getHistNames(loaded_files[0])
   #check that are have the same hist_names
@@ -95,7 +107,7 @@ def merge(output_file, input_files):
     dumps = dumps.replace(' "', '\n"')
     f.write(dumps)
 
-def main(output_file, input_files, n_max_files=500):
+def main(output_file, input_files, n_max_files=50):
   if len(input_files) <= n_max_files:
     merge(output_file, input_files)
     return True

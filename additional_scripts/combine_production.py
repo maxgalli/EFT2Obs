@@ -50,7 +50,9 @@ def loadEqns(procs, input_dir):
       eqn = keepGG2HLL(eqn, proc)
 
       print(proc, [bin_name for bin_name in eqn.keys() if len(eqn[bin_name])>0])
-      del eqn["UNKNOWN"]
+      if "UNKNOWN" in eqn.keys():
+        print("Warning! UNKNOWN is in the equations")
+        del eqn["UNKNOWN"]
       eqns.append(eqn)
   return eqns
 

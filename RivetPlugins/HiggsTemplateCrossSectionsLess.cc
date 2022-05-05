@@ -81,6 +81,7 @@ namespace Rivet {
 
     /// @brief Return true is particle decays to quarks
     bool quarkDecay(const Particle &p) {
+      if (p.children().size() == 0) {std::cout << "hello!" << std::endl;}
       for (const auto &child : p.children()) {
         if (PID::isQuark(child.pid())) {
           return true;
@@ -186,11 +187,12 @@ namespace Rivet {
 
       // Find associated vector bosons
       bool is_uncatdV = false;
+      bool is_onshell = true;
       Particles uncatV_decays;
       FourMomentum uncatV_p4(0, 0, 0, 0);
-      FourVector uncatV_v4(0, 0, 0, 0);
       int nWs = 0, nZs = 0, nTop = 0, nLep = 0;
       if (isVH(prodMode)) {
+        // Look for W or Z from Higgs decay (V on-shell) and count number of leptons (in case of off-shell)
         for (auto ptcl : HepMCUtils::particles(HSvtx, HepMC::children)) {
           if (PID::isW(ptcl->pdg_id())) {
             ++nWs;
@@ -204,47 +206,67 @@ namespace Rivet {
             nLep++;
           }
         }
+
+        // If found on-shell V, find last instance. If not, add together Higgs decay products (the leptons)
         if (nWs + nZs > 0)
           cat.V = getLastInstance(cat.V);
         else {
+          is_onshell = false;
+          std::cout << "Found off-shell" << std::endl;
           for (auto ptcl : HepMCUtils::particles(HSvtx, HepMC::children)) {
             if (!PID::isHiggs(ptcl->pdg_id())) {
               uncatV_decays += Particle(ptcl);
               uncatV_p4 += Particle(ptcl).momentum();
-              // uncatV_v4 += Particle(ptcl).origin();
             }
           }
-          // is_uncatdV = true; cat.V = Particle(24,uncatV_p4,uncatV_v4);
-          //is_uncatdV = true;
-          //cat.V = Particle(24, uncatV_p4);
+
+          // If found 2 leptons from Higgs decay, make a W or a Z according to production mode
+          /* 
+          NOTE: when cat.V is defined in this way, it does not have an associated GenParticle and
+          therefore has no mothers or children. Any functionality that relies on that will fail, 
+          e.g. the  'quarkDecay' function. From what I (mknight@lxplus.cern.ch) can tell, this
+          is fine if when using the 'WH' and 'ZH' production modes, the V decays only leptonically.
+          */
           if (nLep==2 && uncatV_decays.size()==2) {
-            //std::cout << uncatV_decays.charge() << std::endl;
             if (prodMode==HTXS::WH) {
               nWs++;
-              cat.V = Particle(24, uncatV_p4);
+
+              // Sum charge of decay products to find charge of W
+              float charge = 0;
+              for (auto part : uncatV_decays) {
+                charge += part.charge();
+              }
+              if (charge > 0) cat.V = Particle(24, uncatV_p4);
+              else if (charge < 0) cat.V = Particle(-24, uncatV_p4);
+              else return error(cat, HTXS::VH_DECAY_IDENTIFICATION, "Charge of W decay products is zero");
             }
             else if (prodMode==HTXS::QQ2ZH || prodMode==HTXS::GG2ZH) {
               nZs++;
               cat.V = Particle(23, uncatV_p4);
             }
-          }
+          } 
+          else is_uncatdV = true;
         }
       }
 
       if (!is_uncatdV) {
-        if (isVH(prodMode) && !cat.V.genParticle()->end_vertex())
-          return error(cat, HTXS::VH_DECAY_IDENTIFICATION, "Vector boson does not decay!");
+        if (is_onshell) {
+          if (isVH(prodMode) && !cat.V.genParticle()->end_vertex()) 
+            return error(cat, HTXS::VH_DECAY_IDENTIFICATION, "Vector boson does not decay!");
 
-        if (isVH(prodMode) && cat.V.children().size() < 2)
-          return error(cat, HTXS::VH_DECAY_IDENTIFICATION, "Vector boson does not decay!");
+          if (isVH(prodMode) && cat.V.children().size() < 2) 
+            return error(cat, HTXS::VH_DECAY_IDENTIFICATION, "Vector boson does not decay!");
+        }
 
         if ((prodMode == HTXS::WH && (nZs > 0 || nWs != 1)) ||
             ((prodMode == HTXS::QQ2ZH || prodMode == HTXS::GG2ZH) && (nZs != 1 || nWs > 0)))
-          return error(cat,
+              return error(cat,
                        HTXS::VH_IDENTIFICATION,
                        "Found " + std::to_string(nWs) + " W-bosons and " + std::to_string(nZs) +
                            " Z-bosons. Inconsitent with VH expectation.");
+          
       }
+      else return error(cat, HTXS::VH_IDENTIFICATION, "Failed to identify associated V-boson!");
 
       // Find and store the W-bosons from ttH->WbWbH
       Particles Ws;
@@ -276,7 +298,7 @@ namespace Rivet {
       // Either the vector boson produced in association with the Higgs boson,
       // or the ones produced from decays of top quarks produced with the Higgs
       Particles leptonicVs;
-      if (!is_uncatdV) {
+      if (!is_uncatdV && is_onshell) {
         if (isVH(prodMode) && !quarkDecay(cat.V))
           leptonicVs += cat.V;
       } else
@@ -328,8 +350,7 @@ namespace Rivet {
       //std::cout << is_uncatdV << std::endl;
       //std::cout << "nWs" << nWs << std::endl;
 
-      if (is_uncatdV)
-        return error(cat, HTXS::VH_IDENTIFICATION, "Failed to identify associated V-boson!");
+
 
       /*****
        * Step 4.
