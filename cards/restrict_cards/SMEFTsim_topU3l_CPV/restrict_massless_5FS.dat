@@ -73,7 +73,7 @@ DECAY  9000008 0.004070 # H1 : WH
 ## INFORMATION FOR SWITCHES
 ###################################
 Block SWITCHES 
-    1 0.000000e+00 # linearPropCorrections 
+    1 1.000000e+00 # linearPropCorrections 
 
 ###################################
 ## INFORMATION FOR SMEFTCUTOFF
