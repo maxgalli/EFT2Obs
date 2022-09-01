@@ -5,7 +5,6 @@
 
 #include "Rivet/Tools/RivetYODA.hh"
 #include "Rivet/Projections/FinalState.hh" 
-#include "Rivet/Projections/PromptFinalState.hh" 
 #include "Rivet/Projections/IdentifiedFinalState.hh"
 #include "Rivet/Projections/FastJets.hh"
 

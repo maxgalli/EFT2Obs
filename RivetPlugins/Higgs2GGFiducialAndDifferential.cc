@@ -10,8 +10,8 @@ namespace Rivet
 
         //---Photons
         IdentifiedFinalState fs_photons;
+        fs_photons.acceptId(PID::PHOTON);
         declare(fs_photons, "FS_PHOTONS");
-        declare(PromptFinalState(fs), "FS_PROMPT_PHOTONS");
 
         //---Jets
         FastJets fs_jets(fs, FastJets::ANTIKT, 0.4);
@@ -33,7 +33,7 @@ namespace Rivet
 
     void Higgs2GGFiducialAndDifferential::analyze(const Event& event)
     {               
-        auto photons = apply<PromptFinalState>(event, "FS_PROMPT_PHOTONS").particles();       
+        auto photons = apply<IdentifiedFinalState>(event, "FS_PHOTONS").particlesByPt();       
 
         if (photons.size() < 2) 
             vetoEvent;       
