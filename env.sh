@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-EFT2OBS_DIR=/afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs
+EFT2OBS_DIR=/afs/cern.ch/work/g/gallim/MGStudies/EFT2Obs_MattSetup
 export LHAPDF_CONFIG_PATH="${EFT2OBS_DIR}/lhapdf/bin/lhapdf-config"
 export PYTHONPATH="${EFT2OBS_DIR}/lhapdf/lib64/python2.7/site-packages:${PYTHONPATH}"
 export PYTHONPATH="${EFT2OBS_DIR}/scripts:${PYTHONPATH}"

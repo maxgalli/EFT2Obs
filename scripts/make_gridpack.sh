@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd /afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs
+cd /afs/cern.ch/work/g/gallim/MGStudies/EFT2Obs_MattSetup
 
 source env.sh
 
