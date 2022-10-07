@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-cd /afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs
-
 source env.sh
 
 set -e

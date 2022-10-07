@@ -3,7 +3,7 @@ import os
 import argparse
 import time
 
-EFT2OBS_DIR = "/afs/cern.ch/work/m/mknight/private/EFT/topU3l_prelim/EFT2Obs"
+EFT2OBS_DIR = "/afs/cern.ch/work/g/gallim/MGStudies/EFT2Obs_MattSetup3"
 
 jobFlavour_time = {
   "espresso": 20,
