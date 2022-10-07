@@ -74,7 +74,6 @@ namespace Rivet
             if (!too_far) final_candidates.push_back(j8);
         }
         //std::cout << jetsAK8_good.size();
-        std::cout << final_candidates.size() << std::endl;
 
         if (final_candidates.size() > 0){
             Jet final_candidate = final_candidates[0];
