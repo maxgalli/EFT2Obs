@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd /afs/cern.ch/work/g/gallim/MGStudies/EFT2Obs_MattSetup3
 source env.sh
 
 set -e

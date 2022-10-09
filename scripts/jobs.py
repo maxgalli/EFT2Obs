@@ -6,7 +6,6 @@ import glob
 from math import ceil
 from functools import partial
 from multiprocessing import Pool
-import subprocess
 
 JOB_PREFIX = """#!/bin/bash
 set -o pipefail
@@ -15,44 +14,37 @@ source env.sh
 popd
 """
 
+
 CONDOR_TEMPLATE = """executable = %(EXE)s
 arguments = $(ProcId)
 output                = %(TASKDIR)s%(TASK)s.$(ClusterId).$(ProcId).out
 error                 = %(TASKDIR)s%(TASK)s.$(ClusterId).$(ProcId).err
 log                   = %(TASKDIR)s%(TASK)s.$(ClusterId).log
-
-transfer_output_files = Rivet_$(ProcId).yoda
-
 # Send the job to Held state on failure.
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-
 # Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
 periodic_release =  (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
-
 %(EXTRA)s
 queue %(NUMBER)s
-
 """
 
-CONDOR_TEMPLATE = """executable = %(EXE)s
-arguments = $(ProcId)
-output                = %(TASK)s.$(ClusterId).$(ProcId).out
-error                 = %(TASK)s.$(ClusterId).$(ProcId).err
-log                   = %(TASK)s.$(ClusterId).log
-
-transfer_input_files = gridpack_%(TASKNAME)s.tar.gz
-transfer_output_files = Rivet_$(ProcId).json
-
-# Send the job to Held state on failure.
-on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-
-# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
-periodic_release =  (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
-
-%(EXTRA)s
-queue %(NUMBER)s
-
+SLURM_PREFIX_TEMPLATE = """#! /bin/bash
+#SBATCH --get-user-env
+#SBATCH -e %(LOG)s_%%j.err
+echo SLURM_JOB_ID: $SLURM_JOB_ID
+echo HOSTNAME: $HOSTNAME
+mkdir -p /scratch/$USER/${SLURM_JOB_ID}
+export TMPDIR=/scratch/$USER/${SLURM_JOB_ID}
+set -o pipefail
+pushd %(PWD)s
+source env.sh
+popd
 """
+
+SLURM_POSTFIX = """
+rmdir /scratch/$USER/${SLURM_JOB_ID}
+"""
+
 
 ERROR_CAPTURE = """
 function error_exit
@@ -60,7 +52,6 @@ function error_exit
     mv %s %s.$1
     exit $1
 }
-
 trap 'error_exit $?' ERR
 """
 
@@ -72,10 +63,6 @@ def run_command(dry_run, command):
     else:
         print '[DRY-RUN]: ' + command
 
-def MaybeMakeDir(pathname):
-    if not os.path.isdir(pathname) and not os.path.isfile(pathname):
-        print '>> Creating directory %s' % pathname
-        subprocess.check_call(['mkdir', '-p', pathname])
 
 class Jobs:
     description = 'Simple job submission system'
@@ -94,7 +81,7 @@ class Jobs:
 
     def attach_job_args(self, group):
         group.add_argument('--job-mode', default=self.job_mode, choices=[
-                           'interactive', 'script', 'lxbatch', 'condor', 'ts'], help='Task execution mode')
+                           'interactive', 'script', 'lxbatch', 'condor', 'ts','slurm'], help='Task execution mode')
         group.add_argument('--task-name', default=self.task_name,
                            help='Task name, used for job script and log filenames for batch system tasks')
         group.add_argument('--dir', default=self.task_dir,
@@ -127,8 +114,6 @@ class Jobs:
         self.task_dir = self.args.dir
         # if self.dry_run:
         #     self.tracking = False
-        
-        MaybeMakeDir(self.task_dir)
 
     def file_len(self, fname):
         with open(fname) as f:
@@ -159,13 +144,20 @@ class Jobs:
             self.job_queue.append(cmd)
             # print cmd
 
-    def create_job_script(self, commands, script_filename, do_log=False):
+    def create_job_script(self, commands, script_filename, do_log=False, is_slurm=False):
         fname = script_filename
         logname = script_filename.replace('.sh', '.log')
-        DO_JOB_PREFIX = JOB_PREFIX
-        DO_JOB_PREFIX = DO_JOB_PREFIX % ({
-          'PWD': (os.environ['PWD'] if self.args.cwd else '${INITIALDIR}')
-        })
+        if is_slurm:
+            DO_JOB_PREFIX = SLURM_PREFIX_TEMPLATE
+            DO_JOB_PREFIX = DO_JOB_PREFIX % ({
+              'LOG' : script_filename.replace('.sh',''),
+              'PWD' : (os.environ['PWD'] if self.args.cwd else '${INITIALDIR}')
+            })
+        else :
+            DO_JOB_PREFIX = JOB_PREFIX
+            DO_JOB_PREFIX = DO_JOB_PREFIX % ({
+              'PWD' : (os.environ['PWD'] if self.args.cwd else '${INITIALDIR}')
+            })
 
         with open(fname, "w") as text_file:
             text_file.write(DO_JOB_PREFIX)
@@ -190,6 +182,8 @@ class Jobs:
                         full_path.replace('.sh', '.status.running'),
                         full_path.replace('.sh', '.status.done')
                     ))
+            if is_slurm:
+                text_file.write(SLURM_POSTFIX)
         st = os.stat(fname)
         os.chmod(fname, st.st_mode | stat.S_IEXEC)
         print 'Created job script: %s' % script_filename
@@ -216,7 +210,7 @@ class Jobs:
         script_list = []
         status_result = {}
         njobs = 0
-        if self.job_mode in ['script', 'lxbatch', 'ts']:
+        if self.job_mode in ['script', 'lxbatch', 'ts', 'slurm']:
             for i, j in enumerate(range(0, len(self.job_queue), self.merge)):
                 njobs += 1
                 script_name = 'job_%s_%i.sh' % (self.task_name, i)
@@ -242,7 +236,7 @@ class Jobs:
                 # we also keep track of the files that were created in case submission to a
                 # batch system was also requested
                 self.create_job_script(
-                    self.job_queue[j:j + self.merge], script_name, self.job_mode in ['script', 'ts'])
+                    self.job_queue[j:j + self.merge], script_name, self.job_mode in ['script', 'ts'],self.job_mode in ['slurm'])
                 script_list.append(script_name)
         if self.job_mode == 'lxbatch':
             for script in script_list:
@@ -251,6 +245,13 @@ class Jobs:
                 if self.tracking and not self.dry_run:
                     os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'bsub -o %s %s %s' % (logname, self.bopts, full_script))
+        if self.job_mode == 'slurm':
+            for script in script_list:
+                full_script = os.path.abspath(script)
+                logname = full_script.replace('.sh', '_%A.log')
+                if self.tracking and not self.dry_run:
+                    os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
+                run_command(self.dry_run, 'sbatch -o %s %s %s' % (logname, self.bopts, full_script))
         if self.job_mode == 'ts':
             for script in script_list:
                 full_script = os.path.abspath(script)
@@ -258,14 +259,11 @@ class Jobs:
                     os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
         if self.job_mode == 'condor':
-            os.chdir(self.task_dir)
-            print("I am in %s"%os.getcwd())
-
             outscriptname = 'condor_%s.sh' % self.task_name
             subfilename = 'condor_%s.sub' % self.task_name
-            #if self.task_dir is not '':
-            #    outscriptname = os.path.join(self.task_dir, outscriptname)
-            #    subfilename = os.path.join(self.task_dir, subfilename)
+            if self.task_dir is not '':
+                outscriptname = os.path.join(self.task_dir, outscriptname)
+                subfilename = os.path.join(self.task_dir, subfilename)
             print '>> condor job script will be %s' % outscriptname
             outscript = open(outscriptname, "w")
             DO_JOB_PREFIX = JOB_PREFIX % ({
@@ -287,15 +285,11 @@ class Jobs:
               'TASK': self.task_name,
               'TASKDIR': os.path.join(self.task_dir, ''),
               'EXTRA': self.bopts.decode('string_escape'),
-              'NUMBER': jobs,
-              'TASKNAME': self.task_name
+              'NUMBER': jobs
             }
             subfile.write(condor_settings)
             subfile.close()
-            #run_command(self.dry_run, 'condor_submit %s' % (subfilename))
-
-            run_command(self.dry_run, 'condor_submit %s'%('condor_%s.sub' % self.task_name))
-            os.chdir('../')
+            run_command(self.dry_run, 'condor_submit %s' % (subfilename))
 
         if self.job_mode in ['lxbatch', 'ts'] and self.tracking:
             print '>> Status summary: %s' % self.task_name
