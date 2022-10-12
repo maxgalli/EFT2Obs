@@ -1,0 +1,63 @@
+{
+    "blocks": [
+        "DIM6",
+        "DIM62F",
+        "DIM64F4L"
+    ],
+    "inactive": {
+        "default_val": 0.0,
+        "parameters": []
+    },
+    "parameter_defaults": {
+        "gen": 0.0,
+        "sm": 0.0,
+        "val": 0.01
+    },
+    "parameters": [
+        {
+            "block": "DIM6",
+            "index": 2,
+            "name": "cpdc"
+        },
+        {
+            "block": "DIM6",
+            "index": 4,
+            "name": "cdp"
+        },
+        {
+            "block": "DIM6",
+            "index": 7,
+            "name": "cg"
+        },
+        {
+            "block": "DIM6",
+            "index": 8,
+            "name": "cpg"
+        },
+        {
+            "block": "DIM62F",
+            "index": 4,
+            "name": "c3pl1"
+        },
+        {
+            "block": "DIM62F",
+            "index": 5,
+            "name": "c3pl2"
+        },
+        {
+            "block": "DIM62F",
+            "index": 19,
+            "name": "ctp"
+        },
+        {
+            "block": "DIM62F",
+            "index": 24,
+            "name": "ctg"
+        },
+        {
+            "block": "DIM64F4L",
+            "index": 7,
+            "name": "cll1221"
+        }
+    ]
+}
