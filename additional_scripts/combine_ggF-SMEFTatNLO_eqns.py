@@ -126,32 +126,35 @@ def contractEquations(loop, tree, tree_loop_2, tree_loop_4):
         print("Deleting %s"%bin_name)
         del each[bin_name]
 
-def main(input_dir, output, postfix):
-  with open(os.path.join(input_dir, "ggH_SMEFTatNLO_loop_%s.json"%postfix), "r") as f:
-    loop = json.load(f)
-  with open(os.path.join(input_dir, "ggH_SMEFTatNLO_tree_%s.json"%postfix), "r") as f:
-    tree = json.load(f)
-  with open(os.path.join(input_dir, "ggH_SMEFTatNLO_tree_loop_2_%s.json"%postfix), "r") as f:
-    tree_loop_2 = json.load(f)
-  with open(os.path.join(input_dir, "ggH_SMEFTatNLO_tree_loop_4_%s.json"%postfix), "r") as f:
-    tree_loop_4 = json.load(f)
+def main(input_dir):
+  output = "ConvertedEquations/ggH_SMEFTatNLO_{}_combined_pt_h.json"
+  decays = ["HZZ", "HWW", "Htt", "Hbb"]
+  for dec in decays:
+    with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_loop_pt_h.json".format(dec)), "r") as f:
+      loop = json.load(f)
+    with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_tree_pt_h.json".format(dec)), "r") as f:
+      tree = json.load(f)
+    with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_tree_loop_2_pt_h.json".format(dec)), "r") as f:
+      tree_loop_2 = json.load(f)
+    with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_tree_loop_4_pt_h.json".format(dec)), "r") as f:
+      tree_loop_4 = json.load(f)
 
-  contractEquations(loop, tree, tree_loop_2, tree_loop_4)
-  combined_eqn = combineEqns(loop, tree, tree_loop_2, tree_loop_4)
-  combined_eqn = convert_SMEFTatNLO_To_SMEFTsim(combined_eqn)
-  #combined_eqn = addOtherParams(combined_eqn)
+    contractEquations(loop, tree, tree_loop_2, tree_loop_4)
+    combined_eqn = combineEqns(loop, tree, tree_loop_2, tree_loop_4)
+    combined_eqn = convert_SMEFTatNLO_To_SMEFTsim(combined_eqn)
+    #combined_eqn = addOtherParams(combined_eqn)
 
-  with open(args.output, "w") as f:
-    json.dump(combined_eqn, f, indent=4)
+    with open(output.format(dec), "w") as f:
+      json.dump(combined_eqn, f, indent=4)
 
 if __name__=="__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument('--input-dir', '-i', type=str, default="ConvertedEquations/")
-  parser.add_argument('--output', '-o', default="ConvertedEquations/ggH_SMEFTatNLO_combined.json")
-  parser.add_argument('--postfix', type=str, default="")
+  #parser.add_argument('--output', '-o', default="ConvertedEquations/ggH_SMEFTatNLO_combined.json")
+  #parser.add_argument('--postfix', type=str, default="")
   args = parser.parse_args()
 
-  main(args.input_dir, args.output, args.postfix)
+  main(args.input_dir)
 
 
 
