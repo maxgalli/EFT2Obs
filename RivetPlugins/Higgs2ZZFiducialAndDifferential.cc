@@ -33,17 +33,17 @@ namespace Rivet {
       IdentifiedFinalState bare_MU(fs, {PID::MUON, -PID::MUON});
 
       // Selection 1: ZZ-> llll selection
-      Cut etaranges_el = Cuts::abseta < 2.5 && Cuts::pT > 17*GeV;
-      Cut etaranges_mu = Cuts::abseta < 2.7 && Cuts::pT > 8*GeV;
+      Cut etaranges_el = Cuts::abseta < 2.5 && Cuts::pT > 7*GeV;
+      Cut etaranges_mu = Cuts::abseta < 2.7 && Cuts::pT > 5*GeV;
 
-      DressedLeptons electron_sel4l(photon, bare_EL, 0.1, etaranges_el);
+      DressedLeptons electron_sel4l(photon, bare_EL, 0.3, etaranges_el);
       declare(electron_sel4l, "ELECTRON_sel4l");
-      DressedLeptons muon_sel4l(photon, bare_MU, 0.1, etaranges_mu);
+      DressedLeptons muon_sel4l(photon, bare_MU, 0.3, etaranges_mu);
       declare(muon_sel4l, "MUON_sel4l");
 
 
       // Both ZZ on-shell histos
-      book(_h_ZZ_pTZZ, "pt_h", {0,200,300,450,650,10000});
+      book(_h_ZZ_pTZZ, "pt_h", {0,10,20,30,45,60,80,120,200,10000});
     }
 
 
