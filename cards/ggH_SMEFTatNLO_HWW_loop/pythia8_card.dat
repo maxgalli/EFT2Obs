@@ -52,8 +52,14 @@ JetMatching:doShowerKt = off
 !
 25:m0 = 125.0
 25:onMode = off
+24:onMode = off
+-24:onMode = off
 25:onIfMatch = 24 -24
 -24:onIfMatch= 11 12
+-24:onIfMatch= 11 -12
 24:onIfMatch = -11 -12
+24:onIfMatch = -11 12
 -24:onIfMatch = 13 14
+-24:onIfMatch = 13 -14
 24:onIfMatch = -13 -14
+24:onIfMatch = -13 14
