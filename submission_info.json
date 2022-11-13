@@ -62,5 +62,13 @@
 "ggH_SMEFTatNLO_Hbb_loop" : [100000, "Higgs2bbFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_Hbb_tree" : [100000, "Higgs2bbFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_Hbb_tree_loop_2" : [100000, "Higgs2bbFiducialAndDifferential", "GGF"],
-"ggH_SMEFTatNLO_Hbb_tree_loop_4" : [100000, "Higgs2bbFiducialAndDifferential", "GGF"]
+"ggH_SMEFTatNLO_Hbb_tree_loop_4" : [100000, "Higgs2bbFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HbbVBF_loop" : [100000, "Higgs2bbVBFFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HbbVBF_tree" : [100000, "Higgs2bbVBFFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HbbVBF_tree_loop_2" : [100000, "Higgs2bbVBFFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HbbVBF_tree_loop_4" : [100000, "Higgs2bbVBFFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HttBoosted_loop" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HttBoosted_tree" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HttBoosted_tree_loop_2" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
+"ggH_SMEFTatNLO_HttBoosted_tree_loop_4" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"]
 }

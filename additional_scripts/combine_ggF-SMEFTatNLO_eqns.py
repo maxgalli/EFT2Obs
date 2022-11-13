@@ -128,7 +128,7 @@ def contractEquations(loop, tree, tree_loop_2, tree_loop_4):
 
 def main(input_dir):
   output = "ConvertedEquations/ggH_SMEFTatNLO_{}_combined_pt_h.json"
-  decays = ["HZZ", "HWW", "Htt", "Hbb"]
+  decays = ["HZZ", "HWW", "Htt", "Hbb", "HbbVBF", "HttBoosted"]
   for dec in decays:
     with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_loop_pt_h.json".format(dec)), "r") as f:
       loop = json.load(f)
