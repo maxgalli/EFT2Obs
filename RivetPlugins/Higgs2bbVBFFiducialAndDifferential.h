@@ -34,6 +34,7 @@ namespace Rivet
     private:
         double     _sumW;
         Histo1DPtr _h_pt_h;
+        Histo1DPtr _h_mjj;
     };
 
     DECLARE_RIVET_PLUGIN(Higgs2bbVBFFiducialAndDifferential);

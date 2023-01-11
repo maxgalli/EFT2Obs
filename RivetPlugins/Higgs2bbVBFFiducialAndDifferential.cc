@@ -16,6 +16,7 @@ namespace Rivet
         
         //---Histograms
         book(_h_pt_h, "pt_h",{0,450,500,550,600,675,800,1200});
+        book(_h_mjj, "mjj",{1000, 2000, 10000});
     }
 
     void Higgs2bbVBFFiducialAndDifferential::analyze(const Event& event)
@@ -79,6 +80,7 @@ namespace Rivet
             Jet final_candidate = final_candidates[0];
             //std::cout << final_candidate.pT() << std::endl;
             _h_pt_h->fill(final_candidate.pT() / GeV, weight);
+            _h_mjj->fill(final_candidate.mass() / GeV, weight);
             _sumW += event.weights()[0];
         }
        

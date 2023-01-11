@@ -24,7 +24,7 @@ void Higgs2ttBoostedFiducialAndDifferential::init() {
     declare(FastJets(fs, FastJets::ANTIKT, 0.8), "JetsAK8");
 
     //---Histograms
-    book(h_pt_h_, "pt_h", { 0, 450, 600, 10000 });
+    book(h_pt_h_, "pt_h", { 450, 600, 10000 });
 }
 
 void Higgs2ttBoostedFiducialAndDifferential::analyze(const Event &event) {
@@ -144,6 +144,7 @@ void Higgs2ttBoostedFiducialAndDifferential::analyze(const Event &event) {
     }
 
     // invariant mass of di-tau above 250 GeV
+    // commented out because it seems to remove everything
     //if (P4H.mass() < 250 * GeV) vetoEvent;
     std::cout << "We got something" << std::endl;
 

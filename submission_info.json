@@ -70,5 +70,6 @@
 "ggH_SMEFTatNLO_HttBoosted_loop" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_HttBoosted_tree" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_HttBoosted_tree_loop_2" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
-"ggH_SMEFTatNLO_HttBoosted_tree_loop_4" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"]
+"ggH_SMEFTatNLO_HttBoosted_tree_loop_4" : [5000000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
+"qqH_SMEFTsim_topU3l_HbbVBF" : [500000, "Higgs2bbVBFFiducialAndDifferential", "VBF"]
 }

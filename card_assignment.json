@@ -26,6 +26,7 @@
 "ggZH_SMEFTatNLO" : ["SMEFTatNLO_ZH_scale_noCuts.dat", "5FS_Z_ll.dat"],
 "ggZH_lep_SMEFTatNLO" : ["SMEFTatNLO_ZH_scale_noCuts.dat", "5FS.dat"],
 "qqH_SMEFTsim_topU3l" : ["SMEFTsim_5FS_noCuts.dat", "5FS.dat"],
+"qqH_SMEFTsim_topU3l_HbbVBF" : ["SMEFTsim_5FS_noCuts.dat", "5FS_Hbb.dat"],
 "tHq_SMEFTsim_topU3l" : ["SMEFTsim_4FS_dynamic_scale_noCuts.dat", "4FS.dat"],
 "tHW_SMEFTsim_topU3l" : ["SMEFTsim_5FS_dynamic_scale_noCuts.dat", "5FS.dat"],
 "ttH_SMEFTsim_topU3l" : ["SMEFTsim_5FS_dynamic_scale_noCuts.dat", "5FS.dat"],
