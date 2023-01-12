@@ -18,6 +18,8 @@ void Higgs2ttFiducialAndDifferential::init() {
 
     //---Histograms
     book(h_pt_h_, "pt_h", { 0, 45, 80, 120, 140, 170, 200, 350, 450, 10000 });
+    book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
+    book(_h_jet_pt, "pt_j0",{30,60,120,200,350,10000});
 }
 
 void Higgs2ttFiducialAndDifferential::analyze(const Event &event) {
@@ -46,6 +48,8 @@ void Higgs2ttFiducialAndDifferential::analyze(const Event &event) {
     FourMomentum EtMiss =
         applyProjection<MissingMomentum>(event, "MET").missingMomentum();
     FourMomentum P4H;
+    
+    auto all_jets = apply<JetAlg>(event, "Jets").jetsByPt(Cuts::abseta < 4.7 && Cuts::pt > 30*GeV);
 
     if (tauhad_fh.size() == 0 && taulep_fh.size() != 0) // e mu
     {
@@ -127,6 +131,9 @@ void Higgs2ttFiducialAndDifferential::analyze(const Event &event) {
     }
 
     h_pt_h_->fill(P4H.pT() / GeV, weight);
+    _h_njets->fill(all_jets.size());
+    if(all_jets.size() > 0)
+      _h_jet_pt->fill(all_jets[0].pt());
 
     sumW_ += event.weights()[0];
 

@@ -14,6 +14,7 @@
 #include "Rivet/Projections/DressedLeptons.hh"
 #include "Rivet/Projections/PromptFinalState.hh"
 #include "Rivet/Projections/MissingMomentum.hh"
+#include "Rivet/Projections/FastJets.hh"
 
 namespace Rivet
 {
@@ -37,6 +38,7 @@ namespace Rivet
     private:
         double     sumW_;
         Histo1DPtr h_pt_h_;
+        Histo1DPtr _h_njets;
     };
 
     DECLARE_RIVET_PLUGIN(Higgs2WWFiducialAndDifferential);

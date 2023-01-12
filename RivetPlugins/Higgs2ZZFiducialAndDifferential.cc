@@ -12,6 +12,7 @@
 #include "Rivet/Projections/MergedFinalState.hh"
 #include "Rivet/Projections/MissingMomentum.hh"
 #include "Rivet/Projections/InvMassFinalState.hh"
+#include "Rivet/Tools/BinnedHistogram.hh"
 
 namespace Rivet {
 
@@ -41,14 +42,24 @@ namespace Rivet {
       DressedLeptons muon_sel4l(photon, bare_MU, 0.3, etaranges_mu);
       declare(muon_sel4l, "MUON_sel4l");
 
+      //---Jets
+      FastJets fs_jets(fs, FastJets::ANTIKT, 0.4);
+      declare(fs_jets, "JETS");
 
       // Both ZZ on-shell histos
       book(_h_ZZ_pTZZ, "pt_h", {0,10,20,30,45,60,80,120,200,10000});
+      book(_h_jet_pt, "pt_j0",{30,55,95,200,500});
+      book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
+      //book(_h_rapidity, "h_rapidity", {0.0,0.15,0.3,0.45,0.6,0.75,0.9,1.2,1.6,2.5});
+      book(_h_deta, "deta_jj", {0.0,1.6,3.0,1000});
     }
 
 
     /// Do the analysis
     void analyze(const Event& e) {
+      // jets
+      auto jets = apply<JetAlg>(e, "JETS").jetsByPt(Cuts::abseta < 4.7 && Cuts::pt > 30*GeV);
+
       ////////////////////////////////////////////////////////////////////
       // Preselection of leptons for ZZ-> llll final state
       ////////////////////////////////////////////////////////////////////
@@ -136,6 +147,11 @@ namespace Rivet {
       // Fill histograms
       //std::cout << pTZZ << std::endl;
       _h_ZZ_pTZZ->fill(pTZZ);
+      _h_njets->fill(jets.size());
+      if(jets.size() > 0)
+        _h_jet_pt->fill(jets[0].pt());
+      if(jets.size() > 1)
+          _h_deta->fill(fabs(deltaEta(jets[0], jets[1])));
     }
 
 
@@ -262,7 +278,10 @@ namespace Rivet {
   private:
 
     Histo1DPtr _h_ZZ_pTZZ;
-
+    Histo1DPtr _h_jet_pt;
+    Histo1DPtr _h_njets;
+    //Histo1DPtr _h_rapidity;
+    Histo1DPtr _h_deta;
   };
 
 
