@@ -131,9 +131,9 @@ def main(args):
   obs = args.observable
   output = "ConvertedEquations/ggH_SMEFTatNLO_{}_combined_{}.json"
   if obs == "pt_h":
-    decays = ["HZZ", "HWW", "Htt", "Hbb", "HbbVBF", "HttBoosted"]
+    decays = ["Hgg", "HZZ", "HWW", "Htt", "Hbb", "HbbVBF", "HttBoosted"]
   elif obs == "njets":
-    decays = ["HZZ", "HWW", "Htt"]
+    decays = ["Hgg", "HZZ", "HWW", "Htt"]
   elif obs == "pt_j0":
     decays = ["HZZ", "Htt"]
   elif obs == "deta_jj":

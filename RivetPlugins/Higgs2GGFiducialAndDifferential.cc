@@ -25,9 +25,9 @@ namespace Rivet
         book(h_pt_g2_, "pt_g2", {0,10,20,30,40,50,70,90,100,150,200,250,300,400, 500});
         book(h_eta_g1_, "eta_g1", {-5, -4, -3, -2,-1.5, -1, 0, 1,1.5, 2, 3, 4, 5});
         book(h_eta_g2_, "eta_g2", {-5, -4, -3, -2,-1.5, -1, 0, 1,1.5, 2, 3, 4, 5});
-        book(h_njets_eta2p5_, "n_jets_eta2p5", 8, 0, 8);
+        book(h_njets_eta2p5_, "n_jets_eta2p5", {-0.5,0.5,1.5,2.5,3.5,100.5});
         book(h_jet_pt_eta2p5_, "h_jet_pt_eta2p5", {30,40,50,70,90,100,150,200,250,300,400, 500});
-        book(h_njets_eta4p7_, "n_jets_eta4p7", 8, 0, 8);
+        book(h_njets_eta4p7_, "n_jets_eta4p7", {-0.5,0.5,1.5,2.5,3.5,100.5});
         book(h_jet_pt_eta4p7_, "h_jet_pt_eta4p7",{30,40,50,70,90,100,150,200,250,300,400, 500});
     }
 
