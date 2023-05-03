@@ -1,0 +1,8 @@
+import model SMEFTsim_topU3l_MwScheme_UFO
+
+define p = g u u~ d d~ s s~ c c~ b b~
+define j = g u u~ d d~ s s~ c c~ b b~
+
+generate g g > h g NP=0, h > l- l+ l- l+ NP<=1
+
+output HZZ_MattCheck -nojpeg
