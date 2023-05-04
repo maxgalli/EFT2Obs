@@ -52,6 +52,7 @@ namespace Rivet {
       book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
       //book(_h_rapidity, "h_rapidity", {0.0,0.15,0.3,0.45,0.6,0.75,0.9,1.2,1.6,2.5});
       book(_h_deta, "deta_jj", {0.0,1.6,3.0,1000});
+      book(_h_deltaphijj, "deltaphi_jj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
     }
 
 
@@ -152,6 +153,15 @@ namespace Rivet {
         _h_jet_pt->fill(jets[0].pt());
       if(jets.size() > 1)
           _h_deta->fill(fabs(deltaEta(jets[0], jets[1])));
+      for (size_t i = 0; i < jets.size()-1; ++i) {
+          for (size_t j = i+1; j<jets.size(); ++j) {
+              const Jet& jet1 = jets[i];
+              const Jet& jet2 = jets[j];
+              const double deltaPhiJJ = deltaPhi(jet1.momentum(), jet2.momentum());
+              _h_deltaphijj->fill(deltaPhiJJ);
+          }
+      }
+   
     }
 
 
@@ -282,6 +292,7 @@ namespace Rivet {
     Histo1DPtr _h_njets;
     //Histo1DPtr _h_rapidity;
     Histo1DPtr _h_deta;
+    Histo1DPtr _h_deltaphijj;
   };
 
 

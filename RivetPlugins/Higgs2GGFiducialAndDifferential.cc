@@ -29,6 +29,7 @@ namespace Rivet
         book(h_jet_pt_eta2p5_, "h_jet_pt_eta2p5", {30,40,50,70,90,100,150,200,250,300,400, 500});
         book(h_njets_eta4p7_, "n_jets_eta4p7", {-0.5,0.5,1.5,2.5,3.5,100.5});
         book(h_jet_pt_eta4p7_, "h_jet_pt_eta4p7",{30,40,50,70,90,100,150,200,250,300,400, 500});
+        book(h_deltaphijj_, "h_deltaphijj", {0.0, 0.5, 0.9, 1.3, 1.7, 2.5, M_PI});
     }
 
     void Higgs2GGFiducialAndDifferential::analyze(const Event& event)
@@ -79,6 +80,15 @@ namespace Rivet
         h_njets_eta4p7_->fill(jets_eta4p7.size());
         if(jets_eta4p7.size()>0)
             h_jet_pt_eta4p7_->fill(jets_eta4p7[0].pt());
+
+        for (size_t i = 0; i < jets_eta4p7.size()-1; ++i) {
+            for (size_t j = i+1; j<jets_eta4p7.size(); ++j) {
+                const Jet& jet1 = jets_eta4p7[i];
+                const Jet& jet2 = jets_eta4p7[j];
+                const double deltaPhiJJ = deltaPhi(jet1.momentum(), jet2.momentum());
+                h_deltaphijj_->fill(deltaPhiJJ);
+            }
+        }
 
         sumW_ += event.weights()[0];
 
