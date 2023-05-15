@@ -1,0 +1,8 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-decay_noYukawa
+
+define l+ = e+ mu+
+define l- = e- mu-
+
+generate g g > h g NP=0, h > l+ l- l+ l- NP<=1 SMHLOOP=0 NPprop=0
+
+output HZZ_MattCheck2 -nojpeg
