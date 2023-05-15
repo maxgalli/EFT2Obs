@@ -153,14 +153,16 @@ namespace Rivet {
         _h_jet_pt->fill(jets[0].pt());
       if(jets.size() > 1)
           _h_deta->fill(fabs(deltaEta(jets[0], jets[1])));
-      for (size_t i = 0; i < jets.size()-1; ++i) {
+      if(jets.size() > 1)
+          _h_deltaphijj->fill(deltaPhi(jets[0].pt(), jets[1].pt()));
+      /*for (size_t i = 0; i < jets.size()-1; ++i) {
           for (size_t j = i+1; j<jets.size(); ++j) {
               const Jet& jet1 = jets[i];
               const Jet& jet2 = jets[j];
               const double deltaPhiJJ = deltaPhi(jet1.momentum(), jet2.momentum());
               _h_deltaphijj->fill(deltaPhiJJ);
           }
-      }
+      }*/
    
     }
 

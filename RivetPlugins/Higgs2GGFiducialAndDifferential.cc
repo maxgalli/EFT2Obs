@@ -80,15 +80,16 @@ namespace Rivet
         h_njets_eta4p7_->fill(jets_eta4p7.size());
         if(jets_eta4p7.size()>0)
             h_jet_pt_eta4p7_->fill(jets_eta4p7[0].pt());
-
-        for (size_t i = 0; i < jets_eta4p7.size()-1; ++i) {
+        if(jets_eta4p7.size()>1)
+            h_deltaphijj->fill(deltaPhi(jets_eta4p7[0].pt(), jets_eta4p7[1].pt())); 
+        /*for (size_t i = 0; i < jets_eta4p7.size()-1; ++i) {
             for (size_t j = i+1; j<jets_eta4p7.size(); ++j) {
                 const Jet& jet1 = jets_eta4p7[i];
                 const Jet& jet2 = jets_eta4p7[j];
                 const double deltaPhiJJ = deltaPhi(jet1.momentum(), jet2.momentum());
                 h_deltaphijj_->fill(deltaPhiJJ);
             }
-        }
+        }*/
 
         sumW_ += event.weights()[0];
 
