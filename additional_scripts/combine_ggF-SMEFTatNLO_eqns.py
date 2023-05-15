@@ -138,6 +138,8 @@ def main(args):
     decays = ["HZZ", "Htt"]
   elif obs == "deta_jj":
     decays = ["HZZ"]
+  elif obs == "deltaphijj":
+      decays = ["Hgg", "HZZ"]
   for dec in decays:
     with open(os.path.join(input_dir, "ggH_SMEFTatNLO_{}_loop_{}.json".format(dec, obs)), "r") as f:
       loop = json.load(f)

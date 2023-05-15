@@ -3,6 +3,7 @@ import math
 import json
 import argparse
 import yoda
+import pickle
 
 DO_PRINT = False
 
@@ -38,6 +39,7 @@ parser.add_argument('--save', default='json', help="Comma separated list of outp
 parser.add_argument('--translate-tex', default=None, help="json file to translate parameter names to latex")
 parser.add_argument('--translate-txt', default=None, help="json file to translate parameter names in the text file")
 parser.add_argument('--bin-labels', default=None, help="json file to translate bin labels")
+parser.add_argument('--sm-values', default=None)
 args = parser.parse_args()
 
 
@@ -113,9 +115,18 @@ def PrintEntry(label, val, err):
 if args.bin_labels is not None:
     res["bin_labels"] = bin_labels[args.hist]
 
+if args.sm_values is None:
+    list_of_lists = []
+else:
+    with open(args.sm_values, 'r') as f:
+        list_of_lists = pickle.load(f)
 for ib in xrange(nbins):
     terms = []
-    sm = BinStats(hists[0], ib, active_bins)
+    if args.sm_values is None:
+        sm = BinStats(hists[0], ib, active_bins)
+        list_of_lists.append(sm)
+    else:
+        sm = list_of_lists[ib]
     if DO_PRINT: print '-' * n_divider
     if DO_PRINT: print 'Bin %-4i numEntries: %-10i mean: %-10.3g stderr: %-10.3g' % (ib, active_bins[ib][1], sm[0], sm[1])
     extra_label = ''
@@ -124,17 +135,19 @@ for ib in xrange(nbins):
     if DO_PRINT: print '         edges: %s%s' % (res['edges'][ib], extra_label)
     if DO_PRINT: print '-' * n_divider
 
-    print("HARD CODED SM VALUE!!!")
-    sumW = 954.8003900000002
-    sumW2 = 18.336944599999995
-    numEntries = 49733
-    mean = sumW / numEntries
-    stderr2 = (sumW2 / numEntries) - math.pow(mean, 2)
-    if stderr2 < 0.:
-        stderr = 0.
-    else:
-        stderr = math.sqrt(stderr2 / numEntries)
-    sm = [mean, stderr]
+    #print("HARD CODED SM VALUE!!!")
+    #sumW = 954.8003900000002
+    #sumW2 = 18.336944599999995
+    #numEntries = 49733
+    #mean = sumW / numEntries
+    #stderr2 = (sumW2 / numEntries) - math.pow(mean, 2)
+    #if stderr2 < 0.:
+    #    stderr = 0.
+    #else:
+    #    stderr = math.sqrt(stderr2 / numEntries)
+    #sm = [mean, stderr]
+    print(ib)
+    print(sm)
 
     if sm[0] == 0:
         res["bins"].append(terms)
@@ -227,3 +240,6 @@ if 'tex' in save_formats:
     with open('%s.tex' % args.output, 'w') as outfile:
             outfile.write('\n'.join(txt_out))
 
+if args.sm_values is None:
+    with open('sm_values.pkl', 'w') as f:
+        pickle.dump(list_of_lists, f)
