@@ -1,0 +1,10 @@
+import model SMEFTsim_topU3l_MwScheme_UFO-massless_4FS
+
+define p = g u u~ d d~ s s~ c c~
+define j = g u u~ d d~ s s~ c c~
+
+generate p p > h QED=1 NPall<=2 SMHLOOP=1
+generate p p > h QED=1 NPall<=2 SMHLOOP=1
+generate p p > h j j QED=1 NPall<=2 SMHLOOP=1
+
+output ggH_SMEFTsim_topU3l_HZZ -nojpeg

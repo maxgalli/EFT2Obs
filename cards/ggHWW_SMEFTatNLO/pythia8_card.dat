@@ -37,6 +37,29 @@ SigmaTotal:sigmaEl = 21.89
 SigmaTotal:sigmaTot = 100.309
 PDF:pSet=LHAPDF6:NNPDF31_nnlo_hessian_pdfas
 !
+! Matching settings https://github.com/cms-sw/cmssw/blob/master/Configuration/Generator/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_LHE_pythia8_cff.py
+JetMatching:setMad = off
+JetMatching:scheme = 1
+JetMatching:merge = on
+JetMatching:jetAlgorithm = 2
+JetMatching:etaJetMax = 5.
+JetMatching:coneRadius = 1.
+JetMatching:slowJetPower = 1
+JetMatching:qCut = -1
+JetMatching:nQmatch = 5
+JetMatching:nJetMax = 2 !changed from 4 to 2
+JetMatching:doShowerKt = off
+!
 25:m0 = 125.0
 25:onMode = off
-25:onIfMatch = 5 -5
+24:onMode = off
+-24:onMode = off
+25:onIfMatch = 24 -24
+-24:onIfMatch= 11 12
+-24:onIfMatch= 11 -12
+24:onIfMatch = -11 -12
+24:onIfMatch = -11 12
+-24:onIfMatch = 13 14
+-24:onIfMatch = 13 -14
+24:onIfMatch = -13 -14
+24:onIfMatch = -13 14
