@@ -39,12 +39,15 @@ namespace Rivet
         //---Histograms
         book(h_pt_h_, "pt_h",{0,30,45,80,120,200,10000});
         book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
+        book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
     void Higgs2WWFiducialAndDifferential::analyze(const Event& event)
     {               
         const double weight = 1.0;
-        
+        sumW_ += event.weights()[0];
+        _h_sigma->fill(sumW_);
+       
         // jets
         auto jets = apply<JetAlg>(event, "JETS").jetsByPt(Cuts::abseta < 4.7 && Cuts::pt > 30*GeV);
 

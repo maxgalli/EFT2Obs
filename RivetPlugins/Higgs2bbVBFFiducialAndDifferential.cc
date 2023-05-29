@@ -17,12 +17,15 @@ namespace Rivet
         //---Histograms
         book(_h_pt_h, "pt_h",{0,450,500,550,600,675,800,1200});
         book(_h_mjj, "mjj",{1000, 2000, 10000});
+        book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
     void Higgs2bbVBFFiducialAndDifferential::analyze(const Event& event)
     {               
         const double weight = 1.0;
-        
+        sumW_ += event.weights()[0];
+        _h_sigma->fill(sumW_);
+       
         const FastJets& fjAK4 = applyProjection<FastJets>(event, "JetsAK4");
         const Jets& jetsAK4 = fjAK4.jetsByPt(Cuts::ptIn(30*GeV, 10000.0*GeV));
         Jets jetsAK4_good;
@@ -81,7 +84,7 @@ namespace Rivet
             //std::cout << final_candidate.pT() << std::endl;
             _h_pt_h->fill(final_candidate.pT() / GeV, weight);
             _h_mjj->fill(final_candidate.mass() / GeV, weight);
-            _sumW += event.weights()[0];
+            //_sumW += event.weights()[0];
         }
        
         return;

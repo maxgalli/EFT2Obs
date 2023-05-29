@@ -20,7 +20,7 @@ namespace Rivet
     //---ctors---
         Higgs2bbVBFFiducialAndDifferential():
             Analysis("Higgs2bbVBFFiducialAndDifferential"),
-            _sumW(0.)
+            sumW_(0.)
             {};
 
     //---dtor---
@@ -32,9 +32,10 @@ namespace Rivet
         void finalize();
 
     private:
-        double     _sumW;
+        double     sumW_;
         Histo1DPtr _h_pt_h;
         Histo1DPtr _h_mjj;
+        Histo1DPtr _h_sigma;
     };
 
     DECLARE_RIVET_PLUGIN(Higgs2bbVBFFiducialAndDifferential);

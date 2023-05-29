@@ -30,10 +30,16 @@ namespace Rivet
         book(h_njets_eta4p7_, "n_jets_eta4p7", {-0.5,0.5,1.5,2.5,3.5,100.5});
         book(h_jet_pt_eta4p7_, "h_jet_pt_eta4p7",{30,40,50,70,90,100,150,200,250,300,400, 500});
         book(h_deltaphijj_, "h_deltaphijj", {0.0, 0.5, 0.9, 1.3, 1.7, 2.5, M_PI});
+        book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
     void Higgs2GGFiducialAndDifferential::analyze(const Event& event)
     {               
+        //auto weight = event.weights()[0];
+        //_h_sigma->fill(weight);
+        sumW_ += event.weights()[0];
+        _h_sigma->fill(sumW_);
+
         auto photons = apply<IdentifiedFinalState>(event, "FS_PHOTONS").particlesByPt();       
 
         if (photons.size() < 2) 
@@ -81,7 +87,7 @@ namespace Rivet
         if(jets_eta4p7.size()>0)
             h_jet_pt_eta4p7_->fill(jets_eta4p7[0].pt());
         if(jets_eta4p7.size()>1)
-            h_deltaphijj->fill(deltaPhi(jets_eta4p7[0].pt(), jets_eta4p7[1].pt())); 
+            h_deltaphijj_->fill(deltaPhi(jets_eta4p7[0].pt(), jets_eta4p7[1].pt())); 
         /*for (size_t i = 0; i < jets_eta4p7.size()-1; ++i) {
             for (size_t j = i+1; j<jets_eta4p7.size(); ++j) {
                 const Jet& jet1 = jets_eta4p7[i];
@@ -91,13 +97,13 @@ namespace Rivet
             }
         }*/
 
-        sumW_ += event.weights()[0];
 
         return;
     }
 
     void Higgs2GGFiducialAndDifferential::finalize()
     {
+        //_h_sigma->fill(sumOfWeights());
         return;
     }
 }

@@ -31,6 +31,7 @@ class Higgs2ttBoostedFiducialAndDifferential : public Analysis {
   private:
     double sumW_;
     Histo1DPtr h_pt_h_;
+    Histo1DPtr _h_sigma;
 };
 
 DECLARE_RIVET_PLUGIN(Higgs2ttBoostedFiducialAndDifferential);

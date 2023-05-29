@@ -25,10 +25,13 @@ void Higgs2ttBoostedFiducialAndDifferential::init() {
 
     //---Histograms
     book(h_pt_h_, "pt_h", { 450, 600, 10000 });
+    book(_h_sigma, "h_sigma", 1, 0, 100000000);
 }
 
 void Higgs2ttBoostedFiducialAndDifferential::analyze(const Event &event) {
     const double weight = 1.0;
+    sumW_ += event.weights()[0];
+    _h_sigma->fill(sumW_);
 
     Particles tauhad =
         apply<TauFinder>(event, "TauHadronic").particlesByPt();

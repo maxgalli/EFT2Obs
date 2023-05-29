@@ -26,6 +26,7 @@ namespace Rivet {
 
 
     void init() {
+      sumW_ = 0.;
       // Everything super loose
       FinalState fs(Cuts::abseta < 10.0);
 
@@ -53,11 +54,15 @@ namespace Rivet {
       //book(_h_rapidity, "h_rapidity", {0.0,0.15,0.3,0.45,0.6,0.75,0.9,1.2,1.6,2.5});
       book(_h_deta, "deta_jj", {0.0,1.6,3.0,1000});
       book(_h_deltaphijj, "deltaphi_jj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
+      book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
 
     /// Do the analysis
     void analyze(const Event& e) {
+       sumW_ += e.weights()[0];
+      _h_sigma->fill(sumW_);
+     
       // jets
       auto jets = apply<JetAlg>(e, "JETS").jetsByPt(Cuts::abseta < 4.7 && Cuts::pt > 30*GeV);
 
@@ -289,12 +294,14 @@ namespace Rivet {
 
   private:
 
+    double     sumW_;
     Histo1DPtr _h_ZZ_pTZZ;
     Histo1DPtr _h_jet_pt;
     Histo1DPtr _h_njets;
     //Histo1DPtr _h_rapidity;
     Histo1DPtr _h_deta;
     Histo1DPtr _h_deltaphijj;
+    Histo1DPtr _h_sigma;
   };
 
 

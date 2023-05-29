@@ -20,10 +20,13 @@ void Higgs2ttFiducialAndDifferential::init() {
     book(h_pt_h_, "pt_h", { 0, 45, 80, 120, 140, 170, 200, 350, 450, 10000 });
     book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
     book(_h_jet_pt, "pt_j0",{30,60,120,200,350,10000});
+    book(_h_sigma, "h_sigma", 1, 0, 100000000);
 }
 
 void Higgs2ttFiducialAndDifferential::analyze(const Event &event) {
     const double weight = 1.0;
+    sumW_ += event.weights()[0];
+    _h_sigma->fill(sumW_);
 
     Particles tauhad =
         apply<TauFinder>(event, "TauHadronic").particlesByPt();
