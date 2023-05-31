@@ -24,6 +24,7 @@ namespace Rivet
     {               
         const double weight = 1.0;
         sumW_ += event.weights()[0];
+        std::cout << sumW_ << std::endl;
         _h_sigma->fill(sumW_);
        
         const FastJets& fjAK4 = applyProjection<FastJets>(event, "JetsAK4");

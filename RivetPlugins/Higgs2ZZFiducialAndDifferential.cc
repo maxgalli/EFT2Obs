@@ -53,7 +53,7 @@ namespace Rivet {
       book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
       //book(_h_rapidity, "h_rapidity", {0.0,0.15,0.3,0.45,0.6,0.75,0.9,1.2,1.6,2.5});
       book(_h_deta, "deta_jj", {0.0,1.6,3.0,1000});
-      book(_h_deltaphijj, "deltaphi_jj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
+      book(_h_deltaphijj, "deltaphijj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
       book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
@@ -109,6 +109,7 @@ namespace Rivet {
       const double mZZ = (Z1.mom() + Z2.mom()).mass();
       const double pTZZ = (Z1.mom() + Z2.mom()).pT();
       //std::cout << pTZZ << std::endl;
+      //std::cout << mZ1 << " " << mZ2 << " " << mZ1_alt << " " << mZ2_alt << std::endl;
 
       // Event selections
       // pT(Z) > 2 GeV

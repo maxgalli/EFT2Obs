@@ -47,6 +47,7 @@
 "Z_qq_SMEFTsim_topU3l" : [10000, "inclusive", ""],
 "Z_SMEFTsim_topU3l" : [10000, "inclusive", ""],
 "Z_vv_SMEFTsim_topU3l" : [10000, "inclusive", ""],
+
 "ggH_SMEFTatNLO_Hgg_loop" : [100000, "Higgs2GGFiducialAndDifferential", "GGF"], 
 "ggH_SMEFTatNLO_Hgg_tree" : [100000, "Higgs2GGFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_Hgg_tree_loop_2" : [100000, "Higgs2GGFiducialAndDifferential", "GGF"],
@@ -75,7 +76,64 @@
 "ggH_SMEFTatNLO_HttBoosted_tree" : [500000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_HttBoosted_tree_loop_2" : [500000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
 "ggH_SMEFTatNLO_HttBoosted_tree_loop_4" : [500000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"],
-"qqH_SMEFTsim_topU3l_HbbVBF" : [500000, "Higgs2bbVBFFiducialAndDifferential", "VBF"],
+
+"ggH_SMEFTsim_topU3l_Hgg" : [100000, "Higgs2GGFiducialAndDifferential", "GGF"], 
+"ggH_SMEFTsim_topU3l_HZZ" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"], 
+"ggH_SMEFTsim_topU3l_HWW" : [100000, "Higgs2WWFiducialAndDifferential", "GGF"], 
+"ggH_SMEFTsim_topU3l_Htt" : [100000, "Higgs2ttFiducialAndDifferential", "GGF"], 
+"ggH_SMEFTsim_topU3l_HttBoosted" : [100000, "Higgs2ttBoostedFiducialAndDifferential", "GGF"], 
+"ggH_SMEFTsim_topU3l_HbbVBF" : [100000, "Higgs2bbVBFFiducialAndDifferential", "GGF"], 
+
+"bbH_SMEFTsim_topU3l_HWW" : [30000, "Higgs2WWFiducialAndDifferential", "BBH"],
+"bbH_SMEFTsim_topU3l_HZZ" : [30000, "Higgs2ZZFiducialAndDifferential", "BBH"],
+"bbH_SMEFTsim_topU3l_HbbVBF" : [30000, "Higgs2bbFiducialAndDifferential", "BBH"],
+"bbH_SMEFTsim_topU3l_Hgg" : [30000, "Higgs2GGFiducialAndDifferential", "BBH"],
+"bbH_SMEFTsim_topU3l_Htt" : [30000, "Higgs2ttFiducialAndDifferential", "BBH"],
+"bbH_SMEFTsim_topU3l_HttBoosted" : [30000, "Higgs2ttBoostedFiducialAndDifferential", "BBH"],
+
+"qqH_SMEFTsim_topU3l_HWW" : [100000, "Higgs2WWFiducialAndDifferential", "VBF"],
+"qqH_SMEFTsim_topU3l_HZZ" : [100000, "Higgs2ZZFiducialAndDifferential", "VBF"],
+"qqH_SMEFTsim_topU3l_HbbVBF" : [100000, "Higgs2bbVBFFiducialAndDifferential", "VBF"],
+"qqH_SMEFTsim_topU3l_Hgg" : [100000, "Higgs2GGFiducialAndDifferential", "VBF"],
+"qqH_SMEFTsim_topU3l_Htt" : [100000, "Higgs2ttFiducialAndDifferential", "VBF"],
+"qqH_SMEFTsim_topU3l_HttBoosted" : [100000, "Higgs2ttBoostedFiducialAndDifferential", "VBF"],
+
+"ttH_SMEFTsim_topU3l_HWW" : [100000, "Higgs2WWFiducialAndDifferential", "TTH"],
+"ttH_SMEFTsim_topU3l_HZZ" : [100000, "Higgs2ZZFiducialAndDifferential", "TTH"],
+"ttH_SMEFTsim_topU3l_HbbVBF" : [100000, "Higgs2bbVBFFiducialAndDifferential", "TTH"],
+"ttH_SMEFTsim_topU3l_Hgg" : [100000, "Higgs2GGFiducialAndDifferential", "TTH"],
+"ttH_SMEFTsim_topU3l_Htt" : [100000, "Higgs2ttFiducialAndDifferential", "TTH"],
+"ttH_SMEFTsim_topU3l_HttBoosted" : [100000, "Higgs2ttBoostedFiducialAndDifferential", "TTH"],
+
+"WH_lep_tau_SMEFTsim_topU3l_HWW" : [100000, "Higgs2WWFiducialAndDifferential", "WH"],
+"WH_lep_tau_SMEFTsim_topU3l_HZZ" : [100000, "Higgs2ZZFiducialAndDifferential", "WH"],
+"WH_lep_tau_SMEFTsim_topU3l_HbbVBF" : [100000, "Higgs2bbVBFFiducialAndDifferential", "WH"],
+"WH_lep_tau_SMEFTsim_topU3l_Hgg" : [100000, "Higgs2GGFiducialAndDifferential", "WH"],
+"WH_lep_tau_SMEFTsim_topU3l_Htt" : [100000, "Higgs2ttFiducialAndDifferential", "WH"],
+"WH_lep_tau_SMEFTsim_topU3l_HttBoosted" : [100000, "Higgs2ttBoostedFiducialAndDifferential", "WH"],
+
+"ZH_lep_tau_SMEFTsim_topU3l_HWW" : [100000, "Higgs2WWFiducialAndDifferential", "QQ2ZH"],
+"ZH_lep_tau_SMEFTsim_topU3l_HZZ" : [100000, "Higgs2ZZFiducialAndDifferential", "QQ2ZH"],
+"ZH_lep_tau_SMEFTsim_topU3l_HbbVBF" : [100000, "Higgs2bbVBFFiducialAndDifferential", "QQ2ZH"],
+"ZH_lep_tau_SMEFTsim_topU3l_Hgg" : [100000, "Higgs2GGFiducialAndDifferential", "QQ2ZH"],
+"ZH_lep_tau_SMEFTsim_topU3l_Htt" : [100000, "Higgs2ttFiducialAndDifferential", "QQ2ZH"],
+"ZH_lep_tau_SMEFTsim_topU3l_HttBoosted" : [100000, "Higgs2ttBoostedFiducialAndDifferential", "QQ2ZH"],
+
+"tHq_SMEFTsim_topU3l_HWW" : [10000, "Higgs2WWFiducialAndDifferential", "TH"],
+"tHq_SMEFTsim_topU3l_HZZ" : [10000, "Higgs2ZZFiducialAndDifferential", "TH"],
+"tHq_SMEFTsim_topU3l_HbbVBF" : [10000, "Higgs2bbVBFFiducialAndDifferential", "TH"],
+"tHq_SMEFTsim_topU3l_Hgg" : [10000, "Higgs2GGFiducialAndDifferential", "TH"],
+"tHq_SMEFTsim_topU3l_Htt" : [10000, "Higgs2ttFiducialAndDifferential", "TH"],
+"tHq_SMEFTsim_topU3l_HttBoosted" : [10000, "Higgs2ttBoostedFiducialAndDifferential", "TH"],
+
+"tHW_SMEFTsim_topU3l_HWW" : [10000, "Higgs2WWFiducialAndDifferential", "TH"],
+"tHW_SMEFTsim_topU3l_HZZ" : [10000, "Higgs2ZZFiducialAndDifferential", "TH"],
+"tHW_SMEFTsim_topU3l_HbbVBF" : [10000, "Higgs2bbVBFFiducialAndDifferential", "TH"],
+"tHW_SMEFTsim_topU3l_Hgg" : [10000, "Higgs2GGFiducialAndDifferential", "TH"],
+"tHW_SMEFTsim_topU3l_Htt" : [10000, "Higgs2ttFiducialAndDifferential", "TH"],
+"tHW_SMEFTsim_topU3l_HttBoosted" : [10000, "Higgs2ttBoostedFiducialAndDifferential", "TH"],
+
 "HZZ_MattCheck" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"],
-"HZZ_MattCheck2" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"] 
+"HZZ_MattCheck2" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"],
+"HZZ_MattCheckDecOnly" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"] 
 }

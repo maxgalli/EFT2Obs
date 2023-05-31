@@ -29,7 +29,7 @@ namespace Rivet
         book(h_jet_pt_eta2p5_, "h_jet_pt_eta2p5", {30,40,50,70,90,100,150,200,250,300,400, 500});
         book(h_njets_eta4p7_, "n_jets_eta4p7", {-0.5,0.5,1.5,2.5,3.5,100.5});
         book(h_jet_pt_eta4p7_, "h_jet_pt_eta4p7",{30,40,50,70,90,100,150,200,250,300,400, 500});
-        book(h_deltaphijj_, "h_deltaphijj", {0.0, 0.5, 0.9, 1.3, 1.7, 2.5, M_PI});
+        book(h_deltaphijj_, "deltaphijj", {0.0, 0.5, 0.9, 1.3, 1.7, 2.5, M_PI});
         book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
