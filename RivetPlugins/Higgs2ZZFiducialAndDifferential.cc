@@ -13,6 +13,7 @@
 #include "Rivet/Projections/MissingMomentum.hh"
 #include "Rivet/Projections/InvMassFinalState.hh"
 #include "Rivet/Tools/BinnedHistogram.hh"
+#include "Rivet/Math/MathUtils.hh"
 
 namespace Rivet {
 
@@ -49,11 +50,13 @@ namespace Rivet {
 
       // Both ZZ on-shell histos
       book(_h_ZZ_pTZZ, "pt_h", {0,10,20,30,45,60,80,120,200,10000});
+      book(_h_ZZ_pTZZ_coarser, "mom_hc", {0,30,60,120,10000});
       book(_h_jet_pt, "pt_j0",{30,55,95,200,500});
       book(_h_njets, "njets", {-0.5,0.5,1.5,2.5,3.5,100.5});
       //book(_h_rapidity, "h_rapidity", {0.0,0.15,0.3,0.45,0.6,0.75,0.9,1.2,1.6,2.5});
       book(_h_deta, "deta_jj", {0.0,1.6,3.0,1000});
       book(_h_deltaphijj, "deltaphijj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
+      //book(_h_deltaphijj, "deltaphijj", {0, M_PI/2, M_PI, 3*M_PI/2, 2*M_PI});
       book(_h_sigma, "h_sigma", 1, 0, 100000000);
     }
 
@@ -154,13 +157,18 @@ namespace Rivet {
       // Fill histograms
       //std::cout << pTZZ << std::endl;
       _h_ZZ_pTZZ->fill(pTZZ);
+      _h_ZZ_pTZZ_coarser->fill(pTZZ);
       _h_njets->fill(jets.size());
       if(jets.size() > 0)
         _h_jet_pt->fill(jets[0].pt());
       if(jets.size() > 1)
           _h_deta->fill(fabs(deltaEta(jets[0], jets[1])));
       if(jets.size() > 1)
-          _h_deltaphijj->fill(deltaPhi(jets[0].pt(), jets[1].pt()));
+          //std::cout << jets[0].phi() << std::endl;
+          //std::cout << jets[1].phi() << std::endl;
+          //std::cout << deltaPhi(jets[0].ptvec(), jets[1].ptvec()) << std::endl;
+          //std::cout << std::endl;
+          _h_deltaphijj->fill(deltaPhiCustom(jets[0].phi(), jets[1].phi()));
       /*for (size_t i = 0; i < jets.size()-1; ++i) {
           for (size_t j = i+1; j<jets.size(); ++j) {
               const Jet& jet1 = jets[i];
@@ -177,6 +185,12 @@ namespace Rivet {
     void finalize() {
       //const double norm = crossSection()/sumOfWeights()/femtobarn/TeV;
       //scale(_h_ZZ_pTZZ, norm);
+    }
+
+
+    double deltaPhiCustom(double phi1, double phi2) {
+      const double x = mapAngleMPiToPi(phi1 - phi2);
+      return x;
     }
 
 
@@ -297,6 +311,7 @@ namespace Rivet {
 
     double     sumW_;
     Histo1DPtr _h_ZZ_pTZZ;
+    Histo1DPtr _h_ZZ_pTZZ_coarser;
     Histo1DPtr _h_jet_pt;
     Histo1DPtr _h_njets;
     //Histo1DPtr _h_rapidity;
