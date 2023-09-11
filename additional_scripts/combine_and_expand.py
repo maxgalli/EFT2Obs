@@ -8,6 +8,8 @@ from collections import OrderedDict as od
 import ast
 
 def getEqnVal(eqn, bin_name, param_vals):
+  print("Inside getEqnVal")
+  print(eqn)
   non_empty_names = getNonEmptyBinNames(eqn)
   if len(non_empty_names) == 1:
     bin_eqn = eqn[non_empty_names[0]]
@@ -81,8 +83,10 @@ def createGetVal(eqns, function_str):
   for i in range(len(eqns)):
     function_str = function_str.replace("eq%d "%i, "getEqnVal(eqns[%d], bin_name, param_vals)"%i)
   function_str = "lambda eqns, bin_name, param_vals: " + function_str
+  print(function_str)
 
   getVal = eval(function_str)
+  print(getVal)
   return getVal
 
 def deriveEquation(eqns, function_str, linear_only, x=1e-4):
@@ -100,6 +104,8 @@ def deriveEquation(eqns, function_str, linear_only, x=1e-4):
   new_eqns = {}
 
   getVal = createGetVal(eqns, function_str)
+  print('what is getVal?')
+  print(getVal)
 
   for bin_name in bin_names:
     #get linear and quadratic (not cross)

@@ -20,6 +20,7 @@ cross_sections = {
 
 obs_dc_dict = {
     "pt_h": ["Hgg", "HZZ", "HWW", "Htt", "HttBoosted", "HbbVBF"],
+    #"pt_h": ["HbbVBF"],
     #"deltaphijj": ["Hgg", "HZZ"]
 }
 
@@ -50,24 +51,27 @@ for obs in obs_dc_dict:
         xs_list[1].remove("ggH_SMEFTatNLO")
 
         for cross_sections_names in xs_list:
+            #print("Cross section names: {}".format(cross_sections_names))
             for i_bin, edge in enumerate(bins):
                 print(i_bin, edge)
                 output_dct[edge] = {}
                 # Make denominator
-                print("Making denominator")
+                #print("Making denominator")
                 den = 0
                 factors = {} # dictionary of factors for a certain bin i_bin, keys are the production modes
                 obs_json = obs
-                if obs == "pt_h":
-                    if dc == "Hgg":
-                        obs_json = "pt_gg"
                 xs_pieces[edge] = {}
                 for xs_name in cross_sections_names:
+                    if obs == "pt_h":
+                        if dc == "Hgg" and xs_name != "ggH_SMEFTsim_topU3l":
+                            obs_json = "pt_gg"
                     rivet_json_name = "{}_{}/Rivet.json".format(xs_name, dc)
                     if xs_name == "ggH_SMEFTatNLO":
                         rivet_json_name = "ggH_SMEFTatNLO_{}_loop/Rivet.json".format(dc)
-                    print("Will open file inside {}".format(rivet_json_name))
-                    with open("{}{}".format(histograms_base_dir, rivet_json_name)) as f:
+                    #print("Will open file inside {}".format(rivet_json_name))
+                    to_open = "{}{}".format(histograms_base_dir, rivet_json_name)
+                    #print("Will open file {}".format(to_open))
+                    with open(to_open) as f:
                         rivet_dct = json.load(f)
                     try:
                         #print(rivet_dct["{}_active_bins".format(obs_json)])
@@ -78,21 +82,25 @@ for obs in obs_dc_dict:
                         try:
                             sigma_ij_mg = rivet_dct["{}[rw0000]".format(obs_json)][i_active_edge][0]
                         except KeyError:
-                            print("Just opened file apparently did not have '{}[rw0000]'".format(obs_json))
+                            print("{}[rw0000] not found in {}".format(obs_json, to_open))
                             sigma_ij_mg = 0.
                     except ValueError:
                         print("{} does not seem to be in the list of active bins!".format(edge))
                         sigma_ij_mg = 0.
-                    print("sigma_ij_mg = {}".format(sigma_ij_mg))
+                    #print("sigma_ij_mg = {}".format(sigma_ij_mg))
                     sigma_yr = cross_sections[xs_name]
-                    print("sigma_yr = {}".format(sigma_yr))
+                    #print("sigma_yr = {}".format(sigma_yr))
                     try:
                         sigma_mg = rivet_dct["h_sigma[rw0000]"][0][0]
-                        print("sigma_mg = {}".format(sigma_mg))
+                        #print("sigma_mg = {}".format(sigma_mg))
                     except:
-                        print("h_sigma was not found in file above!")
+                        print("h_sigma was not found in file {}!".format(to_open))
                         sigma_mg = 0.0000001 
-                    den += (sigma_ij_mg * sigma_yr / sigma_mg)
+                        print("Converting sigma_ij_mg to 0 to avoid un-realistic cases")
+                        sigma_ij_mg = 0.
+                    to_add = sigma_ij_mg * sigma_yr / sigma_mg
+                    #print("Add {} to denominator from xs {}".format(to_add, xs_name))
+                    den += to_add
                     xs_pieces[edge][xs_name] = {
                             "sigma_ij_mg": sigma_ij_mg,
                             "sigma_yr": sigma_yr,
@@ -103,14 +111,20 @@ for obs in obs_dc_dict:
                     sigma_yr = xs_pieces[edge][xs_name]["sigma_yr"]
                     sigma_mg = xs_pieces[edge][xs_name]["sigma_mg"]
                     factors[xs_name] = (sigma_ij_mg * sigma_yr / sigma_mg) / den
-                print("Factors: {}".format(factors))
+                    #if i_bin in (0, 1) and xs_name.startswith('ggH'): 
+                    #    print(sigma_ij_mg)
+                    #    print(sigma_yr)
+                    #    print(sigma_mg)
+                    #    print(den)
+                    #    print(factors[xs_name])
+                print("Factors for dc {}, bin {}, edge {}: {}".format(dc, i_bin, edge, factors))
                 print("Sum of factors = {}".format(np.sum(list(factors.values()))))
                 
                 for xs_name in cross_sections_names:
                     conv_equations_file_name = "{}{}_{}_{}.json".format(eq_base_dir, xs_name, dc, obs)
                     if xs_name == "ggH_SMEFTatNLO":
                         conv_equations_file_name = "{}{}_{}_combined_{}.json".format(eq_base_dir, xs_name, dc, obs)
-                    print("Will open file {}".format(conv_equations_file_name))
+                    #print("Will open file {}".format(conv_equations_file_name))
                     with open(conv_equations_file_name, "r") as f:
                         try:
                             as_and_bs = json.load(f)[edge]

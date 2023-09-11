@@ -58,6 +58,7 @@ namespace Rivet {
       book(_h_deltaphijj, "deltaphijj", {-M_PI, -M_PI/2, 0, M_PI/2, M_PI});
       //book(_h_deltaphijj, "deltaphijj", {0, M_PI/2, M_PI, 3*M_PI/2, 2*M_PI});
       book(_h_sigma, "h_sigma", 1, 0, 100000000);
+      book(_h_sigma_post, "h_sigma_post", 1, 0, 100000000);
     }
 
 
@@ -177,6 +178,7 @@ namespace Rivet {
               _h_deltaphijj->fill(deltaPhiJJ);
           }
       }*/
+      _h_sigma_post->fill(sumW_);
    
     }
 
@@ -318,6 +320,7 @@ namespace Rivet {
     Histo1DPtr _h_deta;
     Histo1DPtr _h_deltaphijj;
     Histo1DPtr _h_sigma;
+    Histo1DPtr _h_sigma_post;
   };
 
 

@@ -41,7 +41,7 @@ def writeSubmissionInfo(directory, n_per_job, n_jobs):
   with open(json_path, "w") as f:
     json.dump(submission_info, f, indent=4)
 
-def submit(procs, trial_run, dry_run, local, jobFlavour):
+def submit(procs, trial_run, dry_run, local, jobFlavour, decay):
   with open("submission_info.json", "r") as f:
     info = json.load(f)
 
@@ -54,10 +54,12 @@ def submit(procs, trial_run, dry_run, local, jobFlavour):
       directory = "condor/trial_run/%s"%proc
     else:
       n_per_job, n_jobs = getNEventsAndJobs(proc, info, jobFlavour)
-      directory = "condor/pass1/%s"%proc
+      #directory = "condor/pass1/%s"%proc
+      #directory = "condor/pass2/%s"%proc
+      #directory = "condor/pass3/%s"%proc
+      directory = "condor/pass_acc_test/%s"%proc
     
     rivet = info[proc][1]
-    decay = rivet == "inclusive"
     
     command = "python scripts/launch_jobs.py --gridpack gridpack_%s.tar.gz -j %d -s 0 -e %d -p %s -o '${PWD}' --dir %s "%(proc, n_jobs, n_per_job, rivet, directory)
     if local: command += "--job-mode interactive --parallel 1 "
@@ -126,7 +128,10 @@ def getTimeFromLog(log_file):
 
 def checkJobs(procs, trial_run, write_timing):
   if trial_run: start_dir = "condor/trial_run"
-  else:         start_dir = "condor/pass1"
+  #else:         start_dir = "condor/pass1"
+  #else:         start_dir = "condor/pass2"
+  #else:         start_dir = "condor/pass3"
+  else:         start_dir = "condor/pass_acc_test"
 
   if trial_run and write_timing:
     if os.path.exists("timing_info.json"):
@@ -183,9 +188,9 @@ def printJobStatus(directory):
   return n_successful_jobs > 0
 
 
-def main(mode, procs, trial_run, dry_run, local, jobFlavour, write_timing):
+def main(mode, procs, trial_run, dry_run, local, jobFlavour, write_timing, decay):
   if mode == "submit":
-    submit(procs, trial_run, dry_run, local, jobFlavour)
+    submit(procs, trial_run, dry_run, local, jobFlavour, decay)
   elif mode == "checkJobs":
     checkJobs(procs, trial_run, write_timing)
   else:
@@ -200,9 +205,10 @@ if __name__=="__main__":
   parser.add_argument('--local', '-l', action="store_true")
   parser.add_argument('--jobFlavour', '-f', default="espresso")
   parser.add_argument('--write-timing', action="store_true")
+  parser.add_argument('--decay', action="store_true", default=False)
 
 
   args = parser.parse_args()
 
-  main(args.mode, args.procs, args.trial_run, args.dry_run, args.local, args.jobFlavour, args.write_timing)
+  main(args.mode, args.procs, args.trial_run, args.dry_run, args.local, args.jobFlavour, args.write_timing, args.decay)
   
