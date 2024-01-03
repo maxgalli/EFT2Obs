@@ -137,5 +137,7 @@
 "HZZ_MattCheck2" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"],
 "HZZ_MattCheck3" : [1000000, "Higgs2ZZFiducialAndDifferential", "GGF"],
 "HWW_MattCheck3" : [1000000, "Higgs2WWFiducialAndDifferential", "GGF"],
-"HZZ_MattCheckDecOnly" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"] 
+"HZZ_MattCheckDecOnly" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"],
+"HWW_MattCheckDecOnly" : [100000, "Higgs2WWFiducialAndDifferential", "GGF"],
+"HZZ_MattCheckDecOnlyLikeHllll" : [100000, "Higgs2ZZFiducialAndDifferential", "GGF"] 
 }

@@ -16,7 +16,7 @@ def getHistNames(loaded_file):
   return [name.split("_active_bins")[0] for name in loaded_file.keys() if "_active_bins" in name]
 
 def getRwNames(loaded_file, hist_name):
-  return list(filter(lambda x: (hist_name in x) and ("[rw" in x), loaded_file.keys()))
+  return list(filter(lambda x: (hist_name in x) and ("{}_".format(hist_name) not in x) and ("[rw" in x), loaded_file.keys()))
 
 def getUniqueRwNames(loaded_files, hist_name):
   all_names = set()
