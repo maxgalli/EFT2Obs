@@ -42,6 +42,7 @@ namespace Rivet
         Histo1DPtr h_jet_pt_eta4p7_;
         Histo1DPtr h_deltaphijj_;
         Histo1DPtr _h_sigma;
+        Histo1DPtr _h_pt_inclusive;
     };
 
     DECLARE_RIVET_PLUGIN(Higgs2GGFiducialAndDifferential);

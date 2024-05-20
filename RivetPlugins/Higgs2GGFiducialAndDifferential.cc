@@ -32,6 +32,7 @@ namespace Rivet
         book(h_jet_pt_eta4p7_, "h_jet_pt_eta4p7",{30,40,50,70,90,100,150,200,250,300,400, 500});
         book(h_deltaphijj_, "h_deltaphijj", {0.0, 0.5, 0.9, 1.3, 1.7, 2.5, M_PI});
         book(_h_sigma, "h_sigma", 1, 0, 100000000);
+        book(_h_pt_inclusive, "pt_h_inclusive",{0,5,10,15,20,25,30,35,45,60,80,100,120,140,170,200,250,350,450,10000});
     }
 
     void Higgs2GGFiducialAndDifferential::analyze(const Event& event)
@@ -42,6 +43,8 @@ namespace Rivet
         _h_sigma->fill(sumW_);
 
         auto photons = apply<IdentifiedFinalState>(event, "FS_PHOTONS").particlesByPt();       
+        FourMomentum mom_PP_inclusive = photons[0].momentum() + photons[1].momentum();
+        _h_pt_inclusive->fill(mom_PP_inclusive.pt());
 
         if (photons.size() < 2) 
             vetoEvent;       
